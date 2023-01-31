@@ -5,7 +5,7 @@
 
 #include "noncopyable.h"
 
-class Logger;
+#define MUTEDEBUG
 
 #define LOG_INFO(logmsgFormat, ...)                         \
     do                                                      \
@@ -17,35 +17,39 @@ class Logger;
         logger.log(buf);                                    \
     } while(0);  
 
-#define LOG_INFO(logmsgFormat, ...)                         \
+#define ERROR_INFO(logmsgFormat, ...)                         \
     do                                                      \
     {                                                       \
         Logger& logger = Logger::instance();                \
-        logger.setLogLevel(INFO);                           \
+        logger.setLogLevel(ERROR);                           \
         char buf[1024] = {0};                               \
         snprintf(buf, 1024, logmsgFormat, ##__VA_ARGS__);   \
         logger.log(buf);                                    \
     } while(0);    
 
-#define LOG_INFO(logmsgFormat, ...)                         \
+#define FATAL_INFO(logmsgFormat, ...)                         \
     do                                                      \
     {                                                       \
         Logger& logger = Logger::instance();                \
-        logger.setLogLevel(INFO);                           \
+        logger.setLogLevel(FATAL);                           \
         char buf[1024] = {0};                               \
         snprintf(buf, 1024, logmsgFormat, ##__VA_ARGS__);   \
         logger.log(buf);                                    \
-    } while(0);    
-
-#define LOG_INFO(logmsgFormat, ...)                         \
+    } while(0);  
+  
+#ifdef MUTEDEBUG
+#define DEBUG_INFO(logmsgFormat, ...)                         \
     do                                                      \
     {                                                       \
         Logger& logger = Logger::instance();                \
-        logger.setLogLevel(INFO);                           \
+        logger.setLogLevel(DEBUG);                           \
         char buf[1024] = {0};                               \
         snprintf(buf, 1024, logmsgFormat, ##__VA_ARGS__);   \
         logger.log(buf);                                    \
     } while(0);                       
+#else
+#define DEBUG_INFO(logmsgFormat, ...)  
+#endif
 
 enum LogLevel
 {
