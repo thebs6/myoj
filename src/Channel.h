@@ -27,8 +27,8 @@ public:
     void tie(const std::shared_ptr<void> &);
 
     inline int fd() const {return fd_;}
-    inline int event() const {return events_;}
-    inline int revent() const {return revents_;}
+    inline int events() const {return events_;}
+    inline int revents() const {return revents_;}
     inline int index() const {return index_;}
 
 
