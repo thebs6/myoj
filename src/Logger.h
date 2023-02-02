@@ -17,7 +17,7 @@
         logger.log(buf);                                    \
     } while(0);  
 
-#define ERROR_INFO(logmsgFormat, ...)                         \
+#define LOG_ERROR(logmsgFormat, ...)                         \
     do                                                      \
     {                                                       \
         Logger& logger = Logger::instance();                \
@@ -27,7 +27,7 @@
         logger.log(buf);                                    \
     } while(0);    
 
-#define FATAL_INFO(logmsgFormat, ...)                         \
+#define LOG_FATAL(logmsgFormat, ...)                         \
     do                                                      \
     {                                                       \
         Logger& logger = Logger::instance();                \
@@ -35,10 +35,11 @@
         char buf[1024] = {0};                               \
         snprintf(buf, 1024, logmsgFormat, ##__VA_ARGS__);   \
         logger.log(buf);                                    \
+        exit(-1);                                           \
     } while(0);  
   
 #ifdef MUTEDEBUG
-#define DEBUG_INFO(logmsgFormat, ...)                         \
+#define LOG_DEBUG(logmsgFormat, ...)                         \
     do                                                      \
     {                                                       \
         Logger& logger = Logger::instance();                \
@@ -48,7 +49,7 @@
         logger.log(buf);                                    \
     } while(0);                       
 #else
-#define DEBUG_INFO(logmsgFormat, ...)  
+#define LOG_DEBUG(logmsgFormat, ...)  
 #endif
 
 enum LogLevel
