@@ -34,6 +34,7 @@ public:
 
 
     inline void set_index(int index) { index_ = index; }
+    inline void set_revents(int revents) { revents_ = revents; }
 
     // 设置channel的感兴趣事件，调用上层channel的update，update调用底层的epoll_ctl
     void enableReading() { events_ |= kReadEvent, update(); }
