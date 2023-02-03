@@ -3,6 +3,7 @@
 
 #include "Logger.h"
 #include "Channel.h"
+#include "EventLoop.h"
 
 
 const int Channel::kNoneEvent = 0;
@@ -28,13 +29,12 @@ void Channel::tie(const std::shared_ptr<void> &obj)
 
 void Channel::update()
 {
-    // TODO 实现loop_
-    // loop_->updateChannel(this);
+    loop_->updateChannel(this);
 }
 
 void Channel::remove()
 {
-    // loop_->removeChannel(this);
+    loop_->removeChannel(this);
 }
 
 void Channel::handleEvent(Timestamp receiveTime)
