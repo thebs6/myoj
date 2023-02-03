@@ -1,4 +1,5 @@
 #include "Poller.h"
+#include "EpollPoller.h"
 #include <cstdlib>
 Poller* Poller::newDefaultPoller(EventLoop *loop)
 {
@@ -8,6 +9,6 @@ Poller* Poller::newDefaultPoller(EventLoop *loop)
     }
     else
     {
-        return nullptr;
+        return new EpollPoller(loop);
     }
 }
