@@ -45,8 +45,8 @@ public:
 
     // 返回fd当前事件的状态
     inline bool isNoneEvent() const { return events_ == kNoneEvent; }
-    inline bool isReadEvent() const { return events_ & kReadEvent; }
-    inline bool isWriteEvent() const { return events_ & kWriteEvent; }
+    inline bool isReading() const { return events_ & kReadEvent; }
+    inline bool isWriting() const { return events_ & kWriteEvent; }
 
     // 返回所属的loop   
     EventLoop* ownerLoop() { return loop_; }
