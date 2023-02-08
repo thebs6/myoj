@@ -43,7 +43,7 @@ private:
 
     EventLoop *loop_;
     
-    const std::string ipPort;
+    const std::string ipPort_;
     const std::string name_;
 
     std::unique_ptr<Acceptor> acceptor_;
