@@ -11,6 +11,7 @@
 
 class TcpServer : noncopyable
 {
+public:
     using ThreadInitCallback = std::function<void(EventLoop *)>;
 
     enum Option
