@@ -1,4 +1,5 @@
 #include "Logger.h"
+#include "Timestamp.h"
 
 Logger& Logger::instance()
 {
@@ -25,6 +26,5 @@ void Logger::log(std::string msg)
             break;
     }
     
-    // TODO
-    std::cout << pre <<"timestamp" << msg << std::endl;
+    std::cout << pre << Timestamp::now().toString() << msg << std::endl;
 }
