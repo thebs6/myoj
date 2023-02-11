@@ -2,6 +2,7 @@
 #include "Logger.h"
 #include <asm-generic/socket.h>
 #include <cstring>
+#include <netinet/in.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #include <netinet/tcp.h>
@@ -14,7 +15,7 @@ Socket::~Socket()
 
 void Socket::bindAddress(const InetAddress& localaddr)
 {
-    if(0 != bind(sockfd_, (sockaddr*)localaddr.getSockAddr(), sizeof sockfd_))
+    if(0 != bind(sockfd_, (sockaddr*)localaddr.getSockAddr(), sizeof(sockaddr_in)))
     {
         LOG_FATAL("bind sockfd: %d error\n", sockfd_);
     }
