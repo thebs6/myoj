@@ -21,7 +21,12 @@ Acceptor::Acceptor(EventLoop* loop, const InetAddress &listenAddr, bool reusepor
     , acceptSocket_(createNonblocking())
     , acceptChannel_(loop_, acceptSocket_.fd())
     , listening_(false)
-{}
+{
+    acceptSocket_.setReuseAddr(true);
+    acceptSocket_.setReusePort(true);
+    acceptSocket_.bindAddress(listenAddr);
+    acceptChannel_.setReaCallback(std::bind(&Acceptor::handleRead, this));
+}
 
 Acceptor::~Acceptor()
 {
