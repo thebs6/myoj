@@ -9,6 +9,7 @@
 class Channel;
 class EventLoop;
 
+// Poller基类， 暂时只实现epollPoller
 class Poller
 {
 public:
@@ -26,6 +27,7 @@ public:
 
 protected:
     using ChannelMap = std::unordered_map<int, Channel*>;
+    // 管理的Channel
     ChannelMap channels_;
 
 private:

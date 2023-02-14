@@ -6,6 +6,7 @@
 
 #include "InetAddress.h"
 
+// 注意网络字节序和本地字节序的转换
 InetAddress::InetAddress(uint16_t port, std::string ip)
 {
     ::memset(&addr_, 0, sizeof addr_);

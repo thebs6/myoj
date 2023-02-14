@@ -4,10 +4,12 @@
 #include <vector>
 #include <string>
 
+// 封装buffer， 底层是vector
 class Buffer
 {
-public:     
+public:   
     static const size_t kCheapPrepend = 8;
+    // kInitialSize 默认初始化长度
     static const size_t kInitialSize = 1024;
 
     explicit Buffer(size_t initialSize = kInitialSize)
@@ -16,12 +18,16 @@ public:
         , writerIndex_(kCheapPrepend)
     {}
 
+    // 可读取数据长度
     size_t readableBytes() const { return writerIndex_ - readerIndex_; }
+    // 剩余可写数据长度
     size_t writableBytes() const { return buffer_.size() - writerIndex_; }
     size_t prependableBytes() const { return readerIndex_; }
 
+    // 开始读的位置
     const char* peek() const {return begin() + readerIndex_; }
 
+    // 取出len个数据
     void retrieve(size_t len)
     {
         if(len < readableBytes())
@@ -34,13 +40,16 @@ public:
         }
     }
 
+    // 复原读写索引
     void retrieveAll()
     {
         readerIndex_ = kCheapPrepend;
         writerIndex_ = kCheapPrepend;
     }
 
+    // 按string取出所有
     std::string retrieveAllAsString() { return retrieveAsString(readableBytes()); }
+    // 按string取出len个数据
     std::string retrieveAsString(size_t len)
     {
         std::string result(peek(), len);
@@ -48,6 +57,7 @@ public:
         return result;
     }
 
+    // 确保可以写len个数据, 不可以写就扩容
     void ensureWriteableBytes(size_t len)
     {
         if(writableBytes() < len)
@@ -56,6 +66,7 @@ public:
         }
     }
 
+    // 将len长度datacopy到当前的数据后面
     void append(const char* data, size_t len)
     {
         ensureWriteableBytes(len);
@@ -63,7 +74,9 @@ public:
         writerIndex_ += len;
     }
 
+    // 开始写位置指针
     char* beginWrite() { return begin() + writerIndex_; }
+    // const char*
     const char* beginWrite() const { return begin() + writerIndex_; }
 
     ssize_t readFd(int fd, int *saveErrno);
@@ -71,17 +84,27 @@ public:
 
 private:
 
+    // begin指针
     char* begin() { return &*buffer_.begin(); }
     const char* begin() const { return &*buffer_.begin(); }
     
+    // 扩容
     void makeSpace(size_t len)
-    {
+    {   
+        /*
+            改写成这样就好理解了
+            writableBytes + (prependableBytes - kCheapPrepend) <> len
+            比较buffer中空闲的位置 （可写 + 读索引到kCheapPrepend(空白)）和 len的大小
+        */  
+        // 空闲位置不够
         if(writableBytes() + prependableBytes() < len + kCheapPrepend)
-        {
+        {   
+            // 扩容
             buffer_.resize(writerIndex_ + len);
         }
         else
-        {
+        {   
+            // 空闲位置足够，把readidx ~ writeidx 部分拷贝到前面
             size_t readable = readableBytes();
             std::copy(begin() + readerIndex_, begin() + writerIndex_, begin() + kCheapPrepend);
             readerIndex_ = kCheapPrepend;

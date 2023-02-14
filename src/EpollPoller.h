@@ -17,6 +17,7 @@ public:
     void removeChannel(Channel *channel) override;
     
 private:
+    // epoll_wait 监听的时间数量
     static const int kInitEventListSize = 16;
 
     void fillActiveChannels(int numEvents, ChannelList *activeChannels) const;
@@ -24,6 +25,9 @@ private:
 
     using EventList = std::vector<epoll_event>;
 
+    // epoll fd
     int epollfd_;
+
+    // 监听的事件集合
     EventList events_;
 };

@@ -8,9 +8,11 @@
 
 class EventLoop;
 
+// 封装fd
 class Channel
 {
 public:
+    //TODO 改为函数指针
     using EventCallback = std::function<void()>;
     using ReadEventCallback = std::function<void(Timestamp)>;
 
@@ -19,6 +21,7 @@ public:
 
     void handleEvent(Timestamp receiveTime);
 
+    // 对回调事件的设置
     void setReaCallback(ReadEventCallback cb) { readCallback = std::move(cb); }
     void setWriteCallback(EventCallback cb) { writeCallback = std::move(cb); }
     void setCloseCallback(EventCallback cb) { closeCallback = std::move(cb); }
@@ -57,20 +60,21 @@ private:
     void update();
     void handleEventWithGuard(Timestamp receiveTime);
 
-    static const int kNoneEvent;
-    static const int kReadEvent;
-    static const int kWriteEvent;
+    static const int kNoneEvent; // 对任何事件都不感兴趣
+    static const int kReadEvent; // 对读事件感兴趣
+    static const int kWriteEvent; // 对写事件感兴趣
 
     
     EventLoop* loop_; // 所属的LoopEvent
     const int fd_; // 对应的fd
     int events_; // fd上注册的感兴趣的事件
     int revents_; // poller返回的具体发生的事件
-    int index_; //
+    int index_; // 是否加入poller
 
     std::weak_ptr<void> tie_;
     bool tied_;
 
+    // 读写回调、关闭回调、错误回调
     ReadEventCallback readCallback;
     EventCallback writeCallback;
     EventCallback closeCallback;
