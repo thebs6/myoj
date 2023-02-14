@@ -1,14 +1,18 @@
+#pragma once
 
-
-#include "Buffer.h"
-#include "Callbacks.h"
-#include "Channel.h"
-#include "Socket.h"
-#include "Timestamp.h"
 #include "noncopyable.h"
-#include <memory>
-#include "EventLoop.h"
 #include "InetAddress.h"
+#include "Callbacks.h"
+#include "Buffer.h"
+#include "Timestamp.h"
+
+#include <memory>
+#include <string>
+#include <atomic>
+
+class Channel;
+class EventLoop;
+class Socket;
 
 class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnection>
 {

@@ -1,10 +1,18 @@
 #include "TcpConnection.h"
-#include "Callbacks.h"
 #include "Logger.h"
+#include "Socket.h"
 #include "Channel.h"
-#include "Timestamp.h"
-#include <asm-generic/errno.h>
+#include "EventLoop.h"
+
+#include <functional>
+#include <errno.h>
+#include <sys/types.h>         
 #include <sys/socket.h>
+#include <strings.h>
+#include <netinet/tcp.h>
+#include <sys/socket.h>
+#include <string>
+
 
 static EventLoop* CheckLoopNotNull(EventLoop* loop)
 {
