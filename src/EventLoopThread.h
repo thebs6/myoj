@@ -10,7 +10,6 @@ class EventLoopThread
 {
 public:
 
-    //TODO 使用函数指针
     using ThreadInitCallBack = std::function<void(EventLoop*)>;
 
     EventLoopThread(const ThreadInitCallBack &initCallback = ThreadInitCallBack(),

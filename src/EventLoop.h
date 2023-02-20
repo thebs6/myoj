@@ -15,7 +15,6 @@
 class EventLoop : noncopyable
 {
 public:
-    // TODO std::function转换成lambda表达式
     using Functor = std::function<void()>;
     
     EventLoop();

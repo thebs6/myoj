@@ -14,7 +14,6 @@ class EventLoopThread;
 class EventLoopThreadPool : noncopyable
 {
 public:
-    //TODO 函数指针
     using ThreadInitCallBack = std::function<void(EventLoop*)>;
     EventLoopThreadPool(EventLoop* loop, const std::string& name);
     ~EventLoopThreadPool();

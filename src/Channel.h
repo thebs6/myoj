@@ -12,7 +12,6 @@ class EventLoop;
 class Channel
 {
 public:
-    //TODO 改为函数指针
     using EventCallback = std::function<void()>;
     using ReadEventCallback = std::function<void(Timestamp)>;
 
