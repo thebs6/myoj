@@ -45,7 +45,9 @@ TcpServer::~TcpServer()
     // 销毁所有连接
     for(auto &item : connections_)
     {
-        // TODO 这里item.second.reset()会导致item先释放嘛？
+        // 这里item.second.reset()会导致item先释放嘛？ 
+        //不会，这里拷贝到conn的时候，item和conn的计数器都加1，然后把item.second置空，conn的计数-1
+        // 相当于把item move 给
         TcpConnectionPtr conn(item.second);
         // 调用智能指针的reset重置计数
         item.second.reset();
