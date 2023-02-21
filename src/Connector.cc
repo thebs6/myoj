@@ -147,7 +147,7 @@ void Connector::handleWrite() {
     } else {
         setState(kConnected);
         if(connect_) {
-            newConnectionCallback(sockfd);
+            newConnectionCallback(sockfd, serverAddress());
         } else {
             ::close(sockfd);
         }

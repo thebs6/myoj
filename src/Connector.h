@@ -10,7 +10,7 @@
 class Connector : noncopyable, std::enable_shared_from_this<TcpConnection>
 {
 public:
-    using NewConnectionCallback = std::function<void(int sockfd)>;
+    using NewConnectionCallback = std::function<void(int sockfd,const InetAddress& peerAddr)>;
     Connector(EventLoop* loop, const InetAddress& serverAddr);
     ~Connector();
     void setNewConnectionCallback(const NewConnectionCallback& cb) { newConnectionCallback = std::move(cb); }
