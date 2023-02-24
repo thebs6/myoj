@@ -92,9 +92,13 @@ void Connector::restart() {
 
 void Connector::connecting(int sockfd) {
     setState(kConnecting);
-    if(channel_ == nullptr) {
+    if(channel_) {
         LOG_ERROR("Connector::connecting");
+        return;
     }
+
+    channel_.reset(new Channel(loop_, sockfd));
+
     channel_->setWriteCallback(
         std::bind(&Connector::handleWrite, this)
     );
@@ -107,9 +111,8 @@ void Connector::connecting(int sockfd) {
     FIXME: // channel_->tie(shared_from_this()); is not working,
             // as channel_ is not managed by shared_ptr
     */
-    channel_->tie(shared_from_this());
-    // 使能读端，接收客户端发送的数据
-    channel_->enableReading();
+    // channel_->tie(shared_from_this());
+    channel_->enableWriting();
 }
 
 int Connector::removeAndResetChannel() {
