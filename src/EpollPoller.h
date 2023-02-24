@@ -19,6 +19,7 @@ public:
 private:
     // epoll_wait 监听的时间数量
     static const int kInitEventListSize = 16;
+    static const char* operationToString(int op);
 
     void fillActiveChannels(int numEvents, ChannelList *activeChannels) const;
     void update(int operation, Channel *channel);
