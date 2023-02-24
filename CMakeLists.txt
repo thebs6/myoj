@@ -11,3 +11,5 @@ add_subdirectory(src)
 
 # 包含子目录 test
 add_subdirectory(test)
+
+add_subdirectory(http)
