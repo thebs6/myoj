@@ -8,3 +8,13 @@ add_executable(test22 ${EXE_SRC})
 
 # 链接动态库
 target_link_libraries(test22 mymuduo pthread)
+
+
+# 定义可执行文件的源文件
+set(EXE_SRC testClient.cc)
+
+# 添加可执行文件
+add_executable(testClient ${EXE_SRC})
+
+# 链接动态库
+target_link_libraries(testClient mymuduo pthread)
