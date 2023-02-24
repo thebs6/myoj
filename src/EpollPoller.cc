@@ -173,11 +173,24 @@ void EpollPoller::update(int operation, Channel *channel)
     {
         if(operation == EPOLL_CTL_DEL)
         {
-            LOG_ERROR("func=%s => epoll_del error\n", __FUNCTION__);
+            LOG_ERROR("func=%s => epoll_del \n", __FUNCTION__);
         }
         else
         {
-            LOG_ERROR("func=%s => epoll_mod / epoll_add error\n", __FUNCTION__);
+            LOG_ERROR("func=%s => epoll_mod / epoll_add \n", __FUNCTION__);
         }
+    }
+}
+
+const char* EpollPoller::operationToString(int op) {
+    switch (op) {
+        case EPOLL_CTL_ADD :
+            return "ADD";
+        case EPOLL_CTL_DEL:
+            return "DEL";
+        case EPOLL_CTL_MOD:
+            return "MOD";
+        default:
+            return "!Unknown Operation!";
     }
 }
