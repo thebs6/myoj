@@ -5,6 +5,8 @@
 #include "noncopyable.h"
 #include "EventLoop.h"
 #include "Connector.h"
+#include "TcpConnection.h"
+#include "Logger.h"
 
 #include <memory>
 #include <mutex>

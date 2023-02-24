@@ -1,8 +1,7 @@
 #include "TcpClient.h"
 #include "Callbacks.h"
 #include "Connector.h"
-#include "Logger.h"
-#include "TcpConnection.h"
+#include "Poller.h"
 #include <cstdio>
 #include <cstring>
 #include <memory>
@@ -24,6 +23,31 @@ TcpClient::TcpClient(EventLoop* loop,
         std::bind(&TcpClient::newConnection, this, std::placeholders::_1, std::placeholders::_2)
     );
     LOG_INFO("TcpClient::TcpClient[%s], - connector", name.c_str());
+}
+
+TcpClient::~TcpClient() {
+    TcpConnectionPtr conn;
+    bool unique = false;
+    {
+        std::unique_lock<std::mutex> lock(mutex_);
+        unique = connection_.unique();
+        conn = connection_;
+    }
+
+    auto cb = [this] (const TcpConnectionPtr& conn) -> void {
+        loop_->queueInLoop([conn] {
+            conn->connectDestroyed();
+        });
+    };
+
+    if(conn) {
+        loop_->runInLoop(std::bind(&TcpConnection::setCloseCallback, conn, cb));
+    }
+
+    if(unique) {
+        // FIXME: muduo里面是强制关闭
+        conn->shutdown();
+    }
 }
 
 
