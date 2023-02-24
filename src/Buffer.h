@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Logger.h"
+#include <algorithm>
 #include <stddef.h>
 #include <vector>
 #include <string>
@@ -79,6 +81,23 @@ public:
     // const char*
     const char* beginWrite() const { return begin() + writerIndex_; }
 
+    bool empty() const {
+        return readableBytes() == 0 ;
+    }
+
+    const char* findCRLF() const {
+        if(empty()) return nullptr;
+        const char* crlf = std::search(peek(), beginWrite(), kCRLF, kCRLF+1);
+        return crlf == beginWrite() ? nullptr : crlf;
+    }
+
+    void retrieveUntil(const char* end) {
+        if(end < peek() || end > beginWrite()) {
+            LOG_FATAL("retrieveUntil error\n");
+        }
+        retrieve(end - peek());
+    }
+
     ssize_t readFd(int fd, int *saveErrno);
     ssize_t writeFd(int fd, int *saveErrno);
 
@@ -115,4 +134,6 @@ private:
     std::vector<char> buffer_;
     size_t readerIndex_;
     size_t writerIndex_;
+
+    static const char kCRLF[];
 };

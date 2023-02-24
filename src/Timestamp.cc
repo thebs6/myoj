@@ -1,3 +1,4 @@
+#include <array>
 #include <cstdio>
 #include <time.h>
 
@@ -14,4 +15,9 @@ std::string Timestamp::toString() const
             tm_time->tm_hour, tm_time->tm_min, tm_time->tm_sec);
     return buf;
 }
+
+void Timestamp::swap(Timestamp& that) {
+    std::swap(microSecondSinceEpoch_, that.microSecondSinceEpoch_);
+}
+
 

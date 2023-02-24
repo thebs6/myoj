@@ -5,6 +5,8 @@
 
 #include "Buffer.h"
 
+const char Buffer::kCRLF[] = "\r\n";
+
 // 从fd中读
 ssize_t Buffer::readFd(int fd, int* saveErrno)
 {
