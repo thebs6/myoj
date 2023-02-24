@@ -41,7 +41,7 @@ public:
     // 设置channel的感兴趣事件，调用上层channel的update，update调用底层的epoll_ctl
     void enableReading() { events_ |= kReadEvent, update(); }
     void disableReading() { events_ &= ~kReadEvent, update(); }
-    void enableWriting() { events_ |= kReadEvent, update(); }
+    void enableWriting() { events_ |= kWriteEvent, update(); }
     void disableWriting() { events_ &= ~kWriteEvent, update(); }
     void disableAll() { events_ = kNoneEvent, update(); }
 
