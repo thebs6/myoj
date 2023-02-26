@@ -51,12 +51,12 @@ public:
     void connectEstablished();
     void connectDestroyed();
 
-    void setContext(void* context) {
+    void setContext(const std::any& context) {
         context_ = context;
     }
 
-    void* getContext() const {
-        return context_;
+    std::any* getContext() {
+        return &context_;
     }
 
 private:
@@ -114,5 +114,5 @@ private:
     Buffer outputBuffer_; 
 
     // FIXME: void* => std::any ? 
-    void* context_;
+    std::any context_;
 };

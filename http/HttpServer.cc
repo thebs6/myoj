@@ -35,14 +35,12 @@ void HttpServer::start() {
 
 void HttpServer::onConnection(const TcpConnectionPtr& conn) {
     if(conn->connected()) {
-        // FIXME:
-        HttpContext context;
-        conn->setContext(&context);
+        conn->setContext(HttpContext());
     }
 }
 
 void HttpServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp receiveTime) {
-    HttpContext* context = static_cast<HttpContext*>(conn->getContext());
+    HttpContext* context = std::any_cast<HttpContext>(conn->getContext());
     if(!context->parseRequest(buf, receiveTime)) {
         conn->send("HTTP/1.1 400 BadRequest\r\n\r\n");
     }

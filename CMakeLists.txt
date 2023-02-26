@@ -6,6 +6,8 @@ cmake_minimum_required(VERSION 3.0)
 # 定义项目名称
 project(mymuduo)
 
+set(CMAKE_CXX_STANDARD 17)
+
 # 包含子目录 src
 add_subdirectory(src)
 

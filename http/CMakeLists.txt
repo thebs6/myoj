@@ -6,12 +6,13 @@ add_library(http
   HttpServer.cc
 )
 
+
 target_link_libraries(http mymuduo)
 
 # 指定头文件路径
 target_include_directories(http PUBLIC ${PROJECT_SOURCE_DIR}/http)
 target_include_directories(http PUBLIC ${PROJECT_SOURCE_DIR}/src)
-
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 # 设置可执行文件
 add_executable(httpTest test/httpTest.cc)
 
