@@ -38,6 +38,7 @@ TcpConnection::TcpConnection(EventLoop* loop,
     , localAddr_(localAddr)
     , peerAddr_(peerAddr)
     , highWaterMark_(64 * 1024 * 1024) // 高水位初始化64M
+    , context_(nullptr)
 {
     // 设置对应回调
     channel_->setReaCallback(

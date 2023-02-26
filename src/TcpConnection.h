@@ -6,6 +6,7 @@
 #include "Buffer.h"
 #include "Timestamp.h"
 
+#include <any>
 #include <memory>
 #include <string>
 #include <atomic>
@@ -49,6 +50,14 @@ public:
 
     void connectEstablished();
     void connectDestroyed();
+
+    void setContext(void* context) {
+        context_ = context;
+    }
+
+    void* getContext() const {
+        return context_;
+    }
 
 private:
     // 连接状态枚举
@@ -103,4 +112,7 @@ private:
     // 读写缓冲区
     Buffer inputBuffer_;
     Buffer outputBuffer_; 
+
+    // FIXME: void* => std::any ? 
+    void* context_;
 };

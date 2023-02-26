@@ -76,6 +76,11 @@ public:
         writerIndex_ += len;
     }
 
+    void append(const char* data) {
+        size_t len = sizeof(len);
+        append(data, len);
+    }
+
     // 开始写位置指针
     char* beginWrite() { return begin() + writerIndex_; }
     // const char*

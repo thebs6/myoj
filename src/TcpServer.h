@@ -49,6 +49,12 @@ public:
     // 设置线程数量, 不设置就是单线程
     inline void setThreadNum(int numThreads) { threadPool_->setThreadNum(numThreads); }
 
+    EventLoop* getLoop() const {return loop_;}
+
+    const std::string& name() const { return name_; }
+
+    const std::string& ipPort() const { return ipPort_; }
+
     void start();
 
 private:
