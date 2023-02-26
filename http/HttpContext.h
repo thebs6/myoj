@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Buffer.h"
 #include "HttpRequest.h"
 #include "Timestamp.h"

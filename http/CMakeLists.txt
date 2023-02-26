@@ -1,10 +1,19 @@
-include_directories(${PROJECT_SOURCE_DIR}/src)
+# 设置编译目标
+add_library(http
+  HttpContext.cc
+  HttpRequest.cc
+  HttpResponse.cc
+  HttpServer.cc
+)
 
-# 定义可执行文件的源文件
-set(EXE_SRC httpTest.cc)
+target_link_libraries(http mymuduo)
 
-# 添加可执行文件
-add_executable(httpTest ${EXE_SRC})
+# 指定头文件路径
+target_include_directories(http PUBLIC ${PROJECT_SOURCE_DIR}/http)
+target_include_directories(http PUBLIC ${PROJECT_SOURCE_DIR}/src)
 
-# 链接动态库
-target_link_libraries(httpTest mymuduo pthread)
+# 设置可执行文件
+add_executable(httpTest test/httpTest.cc)
+
+# 链接库
+target_link_libraries(httpTest http)

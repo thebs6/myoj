@@ -1,8 +1,7 @@
+#pragma once
+
 #include "Logger.h"
 #include "Timestamp.h"
-#include <cctype>
-#include <sys/types.h>
-#include <type_traits>
 #include <unordered_map>
 #include <utility>
 
@@ -88,6 +87,7 @@ public:
 
     void addHeader(const char* start, const char* colon, const char* end) {
         std::string field(start, colon);
+        ++colon;
         while(colon < end && std::isspace(static_cast<unsigned char>(*colon))) {
             ++colon;
         }
