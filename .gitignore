@@ -1,3 +1,5 @@
 build
 .cache
 lib
+cmake-build-debug
+.clion*
