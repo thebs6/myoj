@@ -7,24 +7,24 @@ Logger& Logger::instance()
     return logger;
 }
 
-// message : [LogLevel] {timestamp} : msg 
-void Logger::log(std::string msg) 
+// message : [LogLevel] {timestamp} : msg
+void Logger::log(std::string msg)
 {
     std::string pre = "";
     switch (LogLevel_) {
-        case INFO : 
+        case INFO :
             pre = "[INFO]";
             break;
-        case ERROR : 
+        case ERROR :
             pre = "[ERROR]";
             break;
-        case FATAL : 
+        case FATAL :
             pre = "[FATAL]";
             break;
-        case DEBUG : 
+        case DEBUG :
             pre = "[DEBUG]";
             break;
     }
-    
+
     std::cout << pre << Timestamp::now().toString() << " " << msg << std::endl;
 }
