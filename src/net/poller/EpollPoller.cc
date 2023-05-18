@@ -114,6 +114,7 @@ void EpollPoller::updateChannel(Channel *channel)
         {
             update(EPOLL_CTL_DEL, channel);
             channels_.erase(fd);
+            channel->set_index(kDeleted);
         }
         // 修改channel对事件的状态
         else
