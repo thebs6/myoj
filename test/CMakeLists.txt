@@ -1,20 +1,7 @@
-include_directories(${PROJECT_SOURCE_DIR}/src)
+# 加载子目录
+add_executable(echoServer echoServer.cc)
 
-# 定义可执行文件的源文件
-set(EXE_SRC test22.cc)
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/test)
 
-# 添加可执行文件
-add_executable(test22 ${EXE_SRC})
+target_link_libraries(echoServer mymuduo)
 
-# 链接动态库
-target_link_libraries(test22 mymuduo pthread)
-
-
-# 定义可执行文件的源文件
-set(EXE_SRC testClient.cc)
-
-# 添加可执行文件
-add_executable(testClient ${EXE_SRC})
-
-# 链接动态库
-target_link_libraries(testClient mymuduo pthread)
