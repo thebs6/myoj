@@ -35,6 +35,7 @@ public:
     bool connected() const { return state_ == kConnected; }
 
     void send(const std::string& buf);
+    void send(Buffer& buf);
     void shutdown();
 
     // 设置回调
@@ -73,6 +74,7 @@ private:
 
     void shutdownInLoop();
     void sendInLoop(const void* data, size_t len);
+    void sendInLoop(const std::string& message);
     
     void handleRead(Timestamp recieveTime);
     void handleWrite();

@@ -76,8 +76,39 @@ void TcpConnection::send(const std::string& buf)
         }
         else
         {
-            loop_->runInLoop(
+            loop_->runInLoop([this, buf]() {
+                sendInLoop(buf.c_str(), buf.size());
+            });
+        }
+        /*
+            TODO 上面可以直接优化成一句loop_->runInLoop(
                 std::bind(&TcpConnection::sendInLoop, this, buf.c_str(), buf.size())
+            );
+        */ 
+    }
+    // TODO 待确定： 其实这里肯定是走runInloop的，以为TcpConnection和loop是在一个线程上的
+}
+
+void TcpConnection::send(Buffer& buf)
+{
+    // 必须处于已连接状态才能发送消息
+    if(state_ == kConnected)
+    {
+        if(loop_->isInLoopThread())
+        {
+            sendInLoop(buf.peek(), buf.readableBytes());
+            buf.retrieveAll();
+        }
+        else
+        {
+            // loop_->runInLoop(
+            //     std::bind(&TcpConnection::sendInLoop, this, buf.retrieveAllAsString())
+            // );
+
+            loop_->runInLoop(
+                [this, &buf]() {
+                    sendInLoop(buf.retrieveAllAsString());
+                }
             );
         }
         /*
@@ -87,6 +118,10 @@ void TcpConnection::send(const std::string& buf)
         */ 
     }
     // TODO 待确定： 其实这里肯定是走runInloop的，以为TcpConnection和loop是在一个线程上的
+}
+
+void TcpConnection::sendInLoop(const std::string& message) {
+    sendInLoop(message.data(), message.size());
 }
 
 // 真正的发送
