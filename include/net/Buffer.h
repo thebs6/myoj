@@ -76,9 +76,14 @@ public:
         writerIndex_ += len;
     }
 
-    void append(const char* data) {
-        size_t len = sizeof(len);
-        append(data, len);
+    // void append(const char* data) {
+    //     size_t len = sizeof(len);
+    //     append(data, len);
+    // }
+
+    void append(const std::string &str)
+    {
+        append(str.data(), str.size());
     }
 
     // 开始写位置指针
