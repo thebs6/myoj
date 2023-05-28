@@ -74,7 +74,7 @@ void EventLoopThreadPool::start(const ThreadInitCallBack &cb)
 }
 
 // 获取下一个EventLoop，采用轮询算法
-EventLoop* EventLoopThreadPool::getNextLoop()
+EventLoop* EventLoopThreadPool::getNextLoopByRB()
 {
     EventLoop* loop = baseloop_;
     // 如果loops为空，说明只有一个线程，直接返回baseloop_
@@ -86,6 +86,43 @@ EventLoop* EventLoopThreadPool::getNextLoop()
         {
             next_ = 0;
         }
+    }   
+    return loop;
+}
+
+// 通过最小负载分配从reactor
+EventLoop* EventLoopThreadPool::getNextLoopByMinLoad()
+{
+    EventLoop* loop = baseloop_;
+    // 如果loops为空，说明只有一个线程，直接返回baseloop_
+    if(!loops_.empty())
+    {
+        auto thread_pos = _thread_pos;
+        if (thread_pos >= loops_.size()) {
+            thread_pos = 0;
+        }
+
+        auto executor_min_load = loops_[thread_pos];
+        auto min_load = executor_min_load->load();
+
+        for (size_t i = 0; i < loops_.size(); ++i, ++thread_pos) {
+            if (thread_pos >= loops_.size()) {
+                thread_pos = 0;
+            }
+
+            auto th = loops_[thread_pos];
+            auto load = th->load();
+
+            if (load < min_load) {
+                min_load = load;
+                executor_min_load = th;
+            }
+            if (min_load == 0) {
+                break;
+            }
+        }
+        _thread_pos = thread_pos;
+        return executor_min_load;
     }   
     return loop;
 }

@@ -10,6 +10,7 @@
 #include "Poller.h"
 #include "Timestamp.h"
 #include "noncopyable.h"
+#include "ThreadLoadCounter.h"
 
 // 事件循环类， 协调控制Channel 和 Poller
 class EventLoop : noncopyable
@@ -35,6 +36,8 @@ public:
     void runInLoop(Functor cb);
     void queueInLoop(Functor cb);
     void wakeup();
+
+    int load() { return loadCountor_.load();}
 
 private:
     void handleRead();
@@ -72,4 +75,6 @@ private:
     using ChannelList = std::vector<Channel*>;
     // 有事件发生的channel
     ChannelList activeChannels_;
+
+    ThreadLoadCounter loadCountor_;
 };

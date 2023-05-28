@@ -96,7 +96,7 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr)
     // 获取下一个线程(单线程：主线程， 多线程：子线程) 以下按多线程处理
     // 对connection的操作都是通过关联的EventLoop完成
     // 通过runInLoop把回调传入到EventLoop当中
-    EventLoop* ioLoop = threadPool_->getNextLoop();
+    EventLoop* ioLoop = threadPool_->getNextLoopByMinLoad();
     // 创建新的conn对象关联子线程
     TcpConnectionPtr conn(new TcpConnection(
         ioLoop, connName, sockfd, localAddr, peerAddr

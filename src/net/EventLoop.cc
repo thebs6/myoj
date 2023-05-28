@@ -73,8 +73,10 @@ void EventLoop::loop()
     {
         // 清楚上一次有事件发生的Channel
         activeChannels_.clear();
+        loadCountor_.sleepWakeUp();
         // 传入activeChannels_到poller的poll方法中，等待其中的事件发生
         pollReturnTime_ = poller_->poll(kPollTimeMs, &activeChannels_);
+        loadCountor_.sleepWakeUp();
         // 对所有有事件发生的Channel执行对应的回调方法
         for (Channel* channel : activeChannels_) {
             channel->handleEvent(pollReturnTime_);

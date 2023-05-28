@@ -22,7 +22,8 @@ public:
     
     void start(const ThreadInitCallBack &cb = ThreadInitCallBack());
 
-    EventLoop *getNextLoop();
+    EventLoop *getNextLoopByRB();
+    EventLoop *getNextLoopByMinLoad();
     std::vector<EventLoop*> getAllLoops();
 
     inline bool started() const { return started_; }
@@ -45,4 +46,6 @@ private:
     // 所以事件循环的集合
     std::vector<EventLoop*> loops_;
     bool enable_cpu_affinity_;
+
+    size_t _thread_pos{0};
 };
