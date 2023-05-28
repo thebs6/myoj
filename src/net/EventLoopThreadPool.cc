@@ -3,6 +3,7 @@
 #include "EventLoopThread.h"
 #include "EventLoop.h"
 #include "EventLoopThreadPool.h"
+#include "Logging.h"
 
 EventLoopThreadPool::EventLoopThreadPool(EventLoop* loop, const std::string& nameArg)
     : baseloop_(loop)
@@ -15,9 +16,29 @@ EventLoopThreadPool::EventLoopThreadPool(EventLoop* loop, const std::string& nam
 EventLoopThreadPool::~EventLoopThreadPool()
 {}
 
+bool setThreadAffinity(int i) {
+    cpu_set_t mask;
+    CPU_ZERO(&mask);
+    if (i >= 0) {
+        CPU_SET(i, &mask);
+    } else {
+        for (auto j = 0u; j < std::thread::hardware_concurrency(); ++j) {
+            CPU_SET(j, &mask);
+        }
+    }
+    if (!pthread_setaffinity_np(pthread_self(), sizeof(mask), &mask)) {
+        return true;
+    }
+    LOG_WARN << "pthread_setaffinity_np failed: ";
+    return false;
+}
+
 // 开启线程池
 void EventLoopThreadPool::start(const ThreadInitCallBack &cb)
 {
+    auto cpus = std::thread::hardware_concurrency();
+    numThreads_ = numThreads_ >= 0 ? numThreads_ : cpus;
+
     started_ = true;
     // 循环开启numThreads_个子线程
     for(int i = 0; i < numThreads_; i++)
@@ -26,7 +47,20 @@ void EventLoopThreadPool::start(const ThreadInitCallBack &cb)
         char buf[name_.size() + 32];
         snprintf(buf, sizeof buf, "%s%d", name_.c_str(), i);
         // 给每个子线程传递ThreadInitCallBack
-        EventLoopThread *t = new EventLoopThread(cb, buf);
+
+        ThreadInitCallBack new_cb;
+        if(enable_cpu_affinity_) {
+            new_cb = std::move(
+                [cpus,i, &cb](EventLoop* loop) {
+                    setThreadAffinity(i % cpus);
+                    if(cb) {
+                        cb(loop);
+                    }
+                }
+            );
+        }
+
+        EventLoopThread *t = new EventLoopThread(new_cb, buf);
         threads_.push_back(std::unique_ptr<EventLoopThread>(t));
         // 运行子线程，返回子线程的eventloop指针
         loops_.push_back(t->startLoop());

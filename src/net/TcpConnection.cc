@@ -61,6 +61,7 @@ TcpConnection::TcpConnection(EventLoop* loop,
 TcpConnection::~TcpConnection()
 {
     LOG_INFO << "TcpConnection::dtor[" << name_.c_str() << "] at fd=" << channel_->fd() << " state=" << static_cast<int>(state_);
+    LOG_INFO << "----------------------------------------------------------------------------------------------";
     // name_.c_str(), channel_->fd(), static_cast<int>(state_));
 }
 
@@ -76,7 +77,7 @@ void TcpConnection::send(const std::string& buf)
         }
         else
         {
-            loop_->runInLoop([this, buf]() {
+            loop_->runInLoop([this, &buf]() {
                 sendInLoop(buf.c_str(), buf.size());
             });
         }
@@ -201,6 +202,7 @@ void TcpConnection::sendInLoop(const void* data, size_t len)
 // 断开连接执行断开回调
 void TcpConnection::shutdown()
 {
+    LOG_INFO << name_ << "state=" << state_ <<  " shutdown !";
     if(state_ == kConnected)
     {
         setState(kDisconnecting);
@@ -243,7 +245,7 @@ void TcpConnection::connectDestroyed()
         if(connectionCallback_) connectionCallback_(shared_from_this());
     }
     // 从poller中移除channel
-    channel_->remove();
+//    channel_->remove();
 }
 
 // 写事件回调，发送数据的时候没有发送完数据然后注册了写事件
@@ -345,7 +347,7 @@ void TcpConnection::handleError()
     {
         err = optval;
     }
-    LOG_ERROR << "cpConnection::handleError name:" << name_.c_str() << " - SO_ERROR:" << err;
+    LOG_ERROR << "cpConnection::handleError name:" << name_.c_str() << " errorfd = " << channel_->fd() << " - SO_ERROR:" << err;
 }
 
 

@@ -48,6 +48,7 @@ public:
 
     // 设置线程数量, 不设置就是单线程
     inline void setThreadNum(int numThreads) { threadPool_->setThreadNum(numThreads); }
+    void enable_cpu_affinity(bool on) { threadPool_->enable_cpu_affinity(on);}
 
     EventLoop* getLoop() const {return loop_;}
 
@@ -95,4 +96,6 @@ private:
 
     // 管理的连接 key = 线程名称 ,value = TcpConnectionPtr
     ConnectionMap connections_;
+
+    bool cpu_affinity_;
 };

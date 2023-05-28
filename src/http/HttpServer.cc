@@ -8,6 +8,7 @@
 void defaultHttpCallback(const HttpRequest&, HttpResponse* resp) {
     resp->setStatusCode(HttpResponse::k404NotFound);
     resp->setStatusMessage("Not Found");
+    LOG_INFO << "NOT FOUND";
     resp->setCloseConnection(true);
 }
 

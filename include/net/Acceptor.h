@@ -19,7 +19,7 @@ public:
     Acceptor(EventLoop* loop, const InetAddress &listenAddr, bool reuseport);
     ~Acceptor();
 
-    inline void setNewConnectionCallback(const NewConnectionCallback& cb) { NewConnectionCallback_ = std::move(cb); }
+    inline void setNewConnectionCallback(NewConnectionCallback&& cb) { NewConnectionCallback_ = std::move(cb); }
     
     void listen();
     inline bool listening() { return listening_; }

@@ -27,6 +27,7 @@ public:
 
     inline bool started() const { return started_; }
     inline const std::string name() const { return name_; }
+    void enable_cpu_affinity(bool on) {enable_cpu_affinity_ = on;}
 
 private:
     // 主线程
@@ -43,4 +44,5 @@ private:
     std::vector<std::unique_ptr<EventLoopThread>> threads_;
     // 所以事件循环的集合
     std::vector<EventLoop*> loops_;
+    bool enable_cpu_affinity_;
 };

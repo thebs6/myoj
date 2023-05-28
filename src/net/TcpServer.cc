@@ -1,6 +1,7 @@
 #include "TcpServer.h"
 #include "Acceptor.h"
 #include "Callbacks.h"
+#include "EventLoop.h"
 #include "InetAddress.h"
 #include "TcpConnection.h"
 #include "EventLoopThreadPool.h"
@@ -78,7 +79,7 @@ void TcpServer::newConnection(int sockfd, const InetAddress& peerAddr)
     snprintf(buf, sizeof buf, "-%s#%d", ipPort_.c_str(), nextConnId_);
     ++nextConnId_;
     std::string connName = name_ + buf;
-
+    LOG_INFO << "--------------------------------------" << "new connfd = " << sockfd << "----------------------------------------------------";
     LOG_INFO << "TcpServer::newConnection [" << name_.c_str() << "] - new connection [" << connName.c_str() << "] from " << peerAddr.toIpPort().c_str();
 
 

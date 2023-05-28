@@ -16,9 +16,8 @@ public:
         
         server_.setMessageCallback(
             std::bind(&EchoServer::onMessage, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-
         // 设置合适的subloop线程数量
-        // server_.setThreadNum(3);
+//        server_.setThreadNum(3);
     }
 
     void start()
@@ -61,6 +60,7 @@ int main()
     EventLoop loop;
     InetAddress addr(8080);
     EchoServer server(&loop, addr, "EchoServer");
+    // server.s
     server.start();
     loop.loop();
 

@@ -1,10 +1,11 @@
+#include "AsyncLogging.h"
 #include "HttpServer.h"
 #include "HttpRequest.h"
 #include "HttpResponse.h"
 #include "HttpContext.h"
 #include "Logging.h"
 #include "Timestamp.h"
-
+#include <csignal>
 extern char favicon[555];
 bool benchmark = true;
 
@@ -13,14 +14,14 @@ void onRequest(const HttpRequest& req, HttpResponse* resp)
     // std::cout << "Headers " << req.methodString() << " " << req.path() << std::endl;
     
     // 打印头部
-    if (!benchmark)
-    {
-        const std::unordered_map<std::string, std::string>& headers = req.headers();
-        for (const auto& header : headers)
-        {
-            std::cout << header.first << ": " << header.second << std::endl;
-        }
-    }
+    // if (!benchmark)
+    // {
+    //     const std::unordered_map<std::string, std::string>& headers = req.headers();
+    //     // for (const auto& header : headers)
+    //     // {
+    //     //     std::cout << header.first << ": " << header.second << std::endl;
+    //     // }
+    // }
 
     if (req.path() == "/")
     {
@@ -49,7 +50,8 @@ void onRequest(const HttpRequest& req, HttpResponse* resp)
         resp->setBody("hello, world!\n");
     }
     else
-    {
+    {   
+        LOG_INFO << "ERRRRRRRRRRRRRRRRRROR!";
         resp->setStatusCode(HttpResponse::k404NotFound);
         resp->setStatusMessage("Not Found");
         resp->setCloseConnection(true);
@@ -57,11 +59,34 @@ void onRequest(const HttpRequest& req, HttpResponse* resp)
 
 }
 
+AsyncLogging* g_asyncLog = NULL;
+
+inline AsyncLogging* getAsyncLog()
+{
+    return g_asyncLog;
+}
+
+
+void asyncLog(const char* msg, int len)
+{
+    AsyncLogging* logging = getAsyncLog();
+    if (logging)
+    {
+        logging->append(msg, len);
+    }
+}
+
+
+// 信号处理器函数
+
 int main(int argc, char* argv[])
 {
     Logger::setLogLevel(Logger::LogLevel::FATAL);
+
     EventLoop loop;
     HttpServer server(&loop, InetAddress(8080), "http-server");
+    server.setCPU(true);
+    server.setThreadNum(0);
     server.setHttpCallback(onRequest);
     server.start();
     loop.loop();

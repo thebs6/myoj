@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.0)
 # 设置项目名称
 project(mymuduo C CXX)
 
-
+# set(CMAKE_BUILD_TYPE Release)
 
 # 添加搜索路径
 include_directories(

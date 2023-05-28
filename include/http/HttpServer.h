@@ -25,6 +25,10 @@ public:
         server_.setThreadNum(numThreads);
     }
 
+    void setCPU(bool on) {
+        server_.enable_cpu_affinity(on);
+    }
+
     void start();
 
 private:

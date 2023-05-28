@@ -49,8 +49,9 @@ void Socket::shutdownWrite()
 {
     if(::shutdown(sockfd_, SHUT_WR) < 0)
     {
-        LOG_ERROR << "shutdownWrite error";
+        LOG_ERROR << "fd=" << sockfd_ << "shutdownWrite error" << "  errno=" << errno;
     }
+    else LOG_INFO << "fd:" << sockfd_ <<" shutdownWrite succee!";
 }
 
 void Socket::setTcpNoDelay(bool on)

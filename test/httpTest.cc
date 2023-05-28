@@ -6,7 +6,7 @@
 #include "TcpServer.h"
 
 void cb(const HttpRequest& req, HttpResponse*) {
-    LOG_INFO("a new HttpRequest!\n");
+    LOG_INFO << "a new HttpRequest!\n";
 }
 
 int main(int argc, const char** argv) {
