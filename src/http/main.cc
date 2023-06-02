@@ -81,15 +81,24 @@ void asyncLog(const char* msg, int len)
 
 int main(int argc, char* argv[])
 {
-    Logger::setLogLevel(Logger::LogLevel::FATAL);
+    std::cout << "pid = %d" << getpid() << std::endl;
+
+    Logger::setLogLevel(Logger::LogLevel::DEBUG);
+    AsyncLogging log(::basename("log/log.txt"), 4*1024*1024);
+
+    g_asyncLog = &log;
+    Logger::setOutput(asyncLog);
+    log.start(); 
 
     EventLoop loop;
     HttpServer server(&loop, InetAddress(8080), "http-server");
     server.setCPU(true);
-    server.setThreadNum(0);
+    server.setThreadNum(-1);
     server.setHttpCallback(onRequest);
     server.start();
     loop.loop();
+    log.stop();
+    return 0;
 }
 
 char favicon[555] = {
