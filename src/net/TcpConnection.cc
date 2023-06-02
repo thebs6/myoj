@@ -6,6 +6,7 @@
 
 #include <functional>
 #include <errno.h>
+#include <memory>
 #include <sys/types.h>         
 #include <sys/socket.h>
 #include <strings.h>
@@ -103,9 +104,9 @@ void TcpConnection::send(Buffer& buf)
         else
         {
             // loop_->runInLoop(
-            //     std::bind(&TcpConnection::sendInLoop, this, buf.retrieveAllAsString())
+            //     std::bind(&TcpConnection::sendInLoop, this, std::cref(buf.retrieveAllAsString()))
             // );
-
+            LOG_DEBUG << "  [" << CurrentThread::tid() << "]" << "TcpConnection::send -> runInLoop";
             loop_->runInLoop(
                 [this, &buf]() {
                     sendInLoop(buf.retrieveAllAsString());
@@ -120,6 +121,61 @@ void TcpConnection::send(Buffer& buf)
     }
     // TODO 待确定： 其实这里肯定是走runInloop的，以为TcpConnection和loop是在一个线程上的
 }
+
+void TcpConnection::send(std::unique_ptr<Buffer> buf)
+{
+    // 必须处于已连接状态才能发送消息
+    if(state_ == kConnected)
+    {
+        if(loop_->isInLoopThread())
+        {
+            sendInLoop(buf->peek(), buf->readableBytes());
+            buf->retrieveAll();
+        }
+        else
+        {
+            // loop_->runInLoop(
+            //     std::bind(&TcpConnection::sendInLoop, this, std::cref(buf.retrieveAllAsString()))
+            // );
+            LOG_DEBUG << "  [" << CurrentThread::tid() << "]" << "TcpConnection::send -> runInLoop";
+            loop_->runInLoop(
+                [this, &buf]() {
+                    sendInLoop(buf->retrieveAllAsString());
+                }
+            );
+        }
+        /*
+            TODO 上面可以直接优化成一句loop_->runInLoop(
+                std::bind(&TcpConnection::sendInLoop, this, buf.c_str(), buf.size())
+            );
+        */ 
+    }
+    // TODO 待确定： 其实这里肯定是走runInloop的，以为TcpConnection和loop是在一个线程上的
+}
+
+
+void TcpConnection::send(std::shared_ptr<Buffer> buf)
+{
+    // 必须处于已连接状态才能发送消息
+    if(state_ == kConnected)
+    {
+        if(loop_->isInLoopThread())
+        {
+            sendInLoop(buf->peek(), buf->readableBytes());
+            buf->retrieveAll();
+        }
+        else
+        {
+            LOG_DEBUG << "  [" << CurrentThread::tid() << "]" << "TcpConnection::send -> runInLoop";
+            loop_->runInLoop(
+                [this, buf]() {
+                    sendInLoop(buf->retrieveAllAsString());
+                }
+            );
+        }
+    }
+}
+
 
 void TcpConnection::sendInLoop(const std::string& message) {
     sendInLoop(message.data(), message.size());

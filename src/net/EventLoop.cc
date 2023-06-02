@@ -105,11 +105,13 @@ void EventLoop::runInLoop(Functor cb)
     // 如果是当前线程调用该方法则直接执行
     if(isInLoopThread())
     {
+        LOG_DEBUG << "  [" << CurrentThread::tid() << "]" << "EventLoop::runInLoop -> runInLoop";
         cb();
     }
     // 否则添加到该循环的回调队列中
     else 
     {
+        LOG_DEBUG << "  [" << CurrentThread::tid() << "]" << "EventLoop::runInLoop -> queueInLoop ->" << "[" <<threadId_ << "]";
         queueInLoop(cb);
     }
 }

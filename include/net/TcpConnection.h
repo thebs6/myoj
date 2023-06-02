@@ -36,6 +36,8 @@ public:
 
     void send(const std::string& buf);
     void send(Buffer& buf);
+    void send(std::unique_ptr<Buffer> buf);
+    void send(std::shared_ptr<Buffer> buf);
     void shutdown();
 
     // 设置回调

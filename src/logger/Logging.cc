@@ -1,4 +1,5 @@
 #include "Logging.h"
+#include "CurrentThread.h"
 
 namespace ThreadInfo {
 __thread char t_errnobuf[512];

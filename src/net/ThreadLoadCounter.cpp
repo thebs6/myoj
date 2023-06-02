@@ -8,7 +8,7 @@ ThreadLoadCounter::ThreadLoadCounter(uint64_t max_size, uint64_t max_usec) {
 }
 
 void ThreadLoadCounter::startSleep() {
-    // std::lock_guard<std::mutex> lck(_mtx);
+    std::lock_guard<std::mutex> lck(_mtx);
     _sleeping = true;
     auto current_time = Timestamp::now().microSecondsSinceEpoch();
     auto run_time = current_time - _last_wake_time;
@@ -20,7 +20,7 @@ void ThreadLoadCounter::startSleep() {
 }
 
 void ThreadLoadCounter::sleepWakeUp() {
-    // std::lock_guard<std::mutex> lck(_mtx);
+    std::lock_guard<std::mutex> lck(_mtx);
     _sleeping = false;
     auto current_time = Timestamp::now().microSecondsSinceEpoch();
     auto sleep_time = current_time - _last_sleep_time;

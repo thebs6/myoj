@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CurrentThread.h"
 #include "Logging.h"
 #include <algorithm>
 #include <stddef.h>
@@ -50,10 +51,22 @@ public:
     }
 
     // 按string取出所有
-    std::string retrieveAllAsString() { return retrieveAsString(readableBytes()); }
+    std::string retrieveAllAsString() { 
+        // auto len = readableBytes();
+        // LOG_DEBUG << "   [" << CurrentThread::tid() << "]" << "before retrieveAsString : " << "len = " << len;
+        // auto str = retrieveAsString(len);
+        // return str; 
+        return retrieveAsString(readableBytes());
+    }
     // 按string取出len个数据
     std::string retrieveAsString(size_t len)
     {
+        // LOG_DEBUG <<"   " <<  len << " <=>" << readableBytes() ;
+        LOG_DEBUG <<  "   [" << CurrentThread::tid() << "]" << " retrieveAsString len = " <<  len ;
+        if(len > readableBytes()) {
+            LOG_DEBUG << len << " ?????? " << readableBytes() ;
+            LOG_FATAL << "   [" << CurrentThread::tid() << "]" << "retrieveAsString more than buffer readableBytes";
+        }
         std::string result(peek(), len);
         retrieve(len);
         return result;
@@ -71,6 +84,8 @@ public:
     // 将len长度datacopy到当前的数据后面
     void append(const char* data, size_t len)
     {
+        LOG_DEBUG << "  [" << CurrentThread::tid() << "]" << "Buffer::append(const char* data, size_t len)";
+
         ensureWriteableBytes(len);
         std::copy(data, data+len, beginWrite());
         writerIndex_ += len;
@@ -83,6 +98,7 @@ public:
 
     void append(const std::string &str)
     {
+        LOG_DEBUG << "  [" << CurrentThread::tid() << "]" << "Buffer::append(const std::string &str)";
         append(str.data(), str.size());
     }
 
@@ -106,6 +122,13 @@ public:
             LOG_FATAL << "retrieveUntil error";
         }
         retrieve(end - peek());
+    }
+
+    void swap(Buffer& rhs)
+    {
+        buffer_.swap(rhs.buffer_);
+        std::swap(readerIndex_, rhs.readerIndex_);
+        std::swap(writerIndex_, rhs.writerIndex_);
     }
 
     ssize_t readFd(int fd, int *saveErrno);

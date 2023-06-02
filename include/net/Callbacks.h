@@ -8,6 +8,7 @@ class TcpConnection;
 class Timestamp;
 
 using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
+using BufferPtr = std::shared_ptr<Buffer>;
 using ConnectionCallback = std::function<void(const TcpConnectionPtr&)>;
 using CloseCallback = std::function<void(const TcpConnectionPtr&)>;
 using WriteCompleteCallback = std::function<void(const TcpConnectionPtr &)>;
