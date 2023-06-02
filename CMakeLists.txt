@@ -56,7 +56,8 @@ add_library(mymuduo SHARED
             )
 
 # 目标动态库所需连接的库（这里需要连接libpthread.so）
-target_link_libraries(mymuduo pthread mysqlclient)
+target_link_libraries(mymuduo pthread mysqlclient tcmalloc)
+# target_link_libraries(mymuduo pthread mysqlclient )
 
 # 设置生成动态库的路径，放在根目录的lib文件夹下面
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
