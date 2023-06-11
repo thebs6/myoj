@@ -84,11 +84,11 @@ int main(int argc, char* argv[])
     std::cout << "pid = %d" << getpid() << std::endl;
 
     Logger::setLogLevel(Logger::LogLevel::DEBUG);
-    AsyncLogging log(::basename("log/log.txt"), 4*1024*1024);
+    // AsyncLogging log(::basename("log/log.txt"), 4*1024*1024);
 
-    g_asyncLog = &log;
-    Logger::setOutput(asyncLog);
-    log.start(); 
+    // g_asyncLog = &log;
+    // Logger::setOutput(asyncLog);
+    // log.start(); 
 
     EventLoop loop;
     HttpServer server(&loop, InetAddress(8080), "http-server");
@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
     server.setHttpCallback(onRequest);
     server.start();
     loop.loop();
-    log.stop();
+    // log.stop();
     return 0;
 }
 
