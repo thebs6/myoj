@@ -2,6 +2,7 @@
 
 #include "Logging.h"
 #include "Timestamp.h"
+#include "json.hpp"
 #include <unordered_map>
 #include <utility>
 
@@ -114,6 +115,14 @@ public:
         return headers_;
     }
 
+    void setBody(std::string&& body) {
+        body_ = move(body);
+    }
+
+    const std::string& body() const {
+        return body_;
+    }
+
     void swap(HttpRequest &that) { 
         std::swap(method_, that.method_);
         std::swap(version_, that.version_);
@@ -130,5 +139,6 @@ private:
     std::string query_;
     Timestamp receiveTime_;
     std::unordered_map<std::string, std::string> headers_;
+    std::string body_;
 };
 

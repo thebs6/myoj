@@ -84,7 +84,7 @@ public:
     // 将len长度datacopy到当前的数据后面
     void append(const char* data, size_t len)
     {
-        LOG_DEBUG << "  [" << CurrentThread::tid() << "]" << "Buffer::append(const char* data, size_t len)";
+        // LOG_DEBUG << "  [" << CurrentThread::tid() << "]" << "Buffer::append(const char* data, size_t len)";
 
         ensureWriteableBytes(len);
         std::copy(data, data+len, beginWrite());
@@ -98,7 +98,7 @@ public:
 
     void append(const std::string &str)
     {
-        LOG_DEBUG << "  [" << CurrentThread::tid() << "]" << "Buffer::append(const std::string &str)";
+        // LOG_DEBUG << "  [" << CurrentThread::tid() << "]" << "Buffer::append(const std::string &str)";
         append(str.data(), str.size());
     }
 

@@ -20,7 +20,7 @@ HttpServer::HttpServer(EventLoop* loop,
                const std::string& name,
                TcpServer::Option option)
                : server_(loop, listenAddr, name, option),
-                 httpCallback_(defaultHttpCallback), pool(4)
+                 httpCallback_(defaultHttpCallback), pool(1)
 {
     server_.setConnectionCallback(
         std::bind(&HttpServer::onConnection, this, std::placeholders::_1)
@@ -66,8 +66,6 @@ void HttpServer::onConnection(const TcpConnectionPtr& conn) {
 void HttpServer::handleRequest(const TcpConnectionPtr& conn, std::shared_ptr<Buffer> buf, Timestamp receiveTime, HttpContext* context) {
     
     LOG_DEBUG << "  " << "连接" << conn->peerAddress().toIpPort() << "分配到" << CurrentThread::tid() ;
-
-    LOG_DEBUG << buf->peek();
 
     if (!context->parseRequest(buf.get(), receiveTime)) {
         conn->send("HTTP/1.1 400 BadRequest\r\n\r\n");

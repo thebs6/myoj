@@ -63,8 +63,8 @@ bool HttpContext::parseRequest(Buffer* buf, Timestamp receieveTime) {
                     request_.addHeader(buf->peek(), colon, crlf);
                 } else {
                     //FIXME: 空行，或者头的结尾
-                    state_ = kGotAll;
-                    hasMore = false;
+                    state_ = kExpectBody;
+                    // hasMore = false;
                 }
                 buf->retrieveUntil(crlf + 2);
             } else {
@@ -73,7 +73,16 @@ bool HttpContext::parseRequest(Buffer* buf, Timestamp receieveTime) {
         }
         else if (state_ == kExpectBody)
         {
-            //FIXME
+            
+
+            request_.setBody(std::string(buf->peek(), buf->readableBytes()));
+            buf->retrieveAll();
+
+
+            // LOG_DEBUG << body ;
+            // 更新状态为已经处理完所有内容
+            state_ = kGotAll;
+            hasMore = false;
         }
     }
     return ok;
