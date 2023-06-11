@@ -21,7 +21,7 @@ include_directories(
     # ${PROJECT_SOURCE_DIR}/src/timer
     ${PROJECT_SOURCE_DIR}/src/logger
     # ${PROJECT_SOURCE_DIR}/src/memory
-    # ${PROJECT_SOURCE_DIR}/src/mysql
+    ${PROJECT_SOURCE_DIR}/src/mysql
     )
 
 include_directories(${PROJECT_SOURCE_DIR}/thirdparty)
@@ -34,7 +34,7 @@ aux_source_directory(${PROJECT_SOURCE_DIR}/src/http SRC_HTTP)
 # aux_source_directory(${PROJECT_SOURCE_DIR}/src/timer SRC_TIMER)
 aux_source_directory(${PROJECT_SOURCE_DIR}/src/logger SRC_LOG)
 # aux_source_directory(${PROJECT_SOURCE_DIR}/src/memory SRC_MEMORY)
-# aux_source_directory(${PROJECT_SOURCE_DIR}/src/mysql SRC_MYSQL)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/mysql SRC_MYSQL)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -84,7 +84,7 @@ add_subdirectory(oj)
 
 # add_subdirectory(src/memory/test)
 
-# add_subdirectory(src/mysql/test)
+add_subdirectory(src/mysql/test)
 
 # 加载base
 # add_subdirectory(src/base/test)
