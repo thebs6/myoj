@@ -3,6 +3,7 @@
 #include <vector>
 #include <unordered_map>
 
+#include "ThreadLoadCounter.h"
 #include "noncopyable.h"
 #include "Timestamp.h"
 
@@ -25,11 +26,12 @@ public:
     bool hasChannel(Channel *channel) const;
     static Poller* newDefaultPoller(EventLoop *loop);
 
+    virtual int load() = 0;
 protected:
     using ChannelMap = std::unordered_map<int, Channel*>;
     // 管理的Channel
     ChannelMap channels_;
-
+    ThreadLoadCounter loadCountor_;
 private:
     EventLoop *ownerLoop_;
 };

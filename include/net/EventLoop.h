@@ -37,7 +37,9 @@ public:
     void queueInLoop(Functor cb);
     void wakeup();
 
-    int load() { return loadCountor_.load();}
+    // int load() { return loadCountor_.load();}
+
+    int load() { return poller_->load();}
 
 private:
     void handleRead();

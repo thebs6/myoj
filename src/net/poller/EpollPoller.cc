@@ -33,8 +33,11 @@ Timestamp EpollPoller::poll(int timeoutMs, ChannelList *activeChannels)
     // poll会被频繁调用，用LOG_DEBUG输出，当并发量高的时候关闭LOG_DEBUG
     LOG_DEBUG << "fd total count: " << channels_.size();
 
+    
     // 这里要 &*events_.begin() 而不是用events_begin(), 因为begin()返回的是一个iterator类型而不是指针类型，虽然用*可以解引用。
+    loadCountor_.startSleep();
     int numEvents = ::epoll_wait(epollfd_, &*events_.begin(), static_cast<int>(events_.size()), timeoutMs);
+    loadCountor_.sleepWakeUp();
     int errorTmp = errno;
     // 最后返回的时间戳
     Timestamp now(Timestamp::now());
@@ -146,7 +149,7 @@ void EpollPoller::update(int operation, Channel *channel)
 {
     epoll_event event;
     ::memset(&event, 0, sizeof event);
-
+    LOG_INFO << "  " << channel->fd() << " update to" << operationToString(operation);
     // 就是在这里对把event和channel，fd关联起来
     /*
         struct epoll_event

@@ -16,6 +16,10 @@ public:
     void updateChannel(Channel *channel) override;
     void removeChannel(Channel *channel) override;
     
+    int load() override {
+        return loadCountor_.load();
+    }
+    
 private:
     // epoll_wait 监听的时间数量
     static const int kInitEventListSize = 16;

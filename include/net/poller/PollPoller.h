@@ -22,4 +22,7 @@ public:
 
     typedef std::vector<struct pollfd> PollFdList;
     PollFdList pollfds_;
+    int load() override {
+        return 1;
+    };
 };
