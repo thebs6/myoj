@@ -14,7 +14,6 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/include/http
     # ${PROJECT_SOURCE_DIR}/include/timer
     ${PROJECT_SOURCE_DIR}/include/logger
-
     ${PROJECT_SOURCE_DIR}/src/base
     ${PROJECT_SOURCE_DIR}/src/net
     ${PROJECT_SOURCE_DIR}/src/net/poller
