@@ -29,7 +29,7 @@ TimerQueue::TimerQueue(EventLoop* loop)
       timerfdChannel_(loop_, timerfd_),
       timers_()
 {
-    timerfdChannel_.setReadCallback(
+    timerfdChannel_.setReaCallback(
         std::bind(&TimerQueue::handleRead, this));
     timerfdChannel_.enableReading();
 }
