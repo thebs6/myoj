@@ -1,28 +1,26 @@
 #include "UserController.h"
+#include "UserService.h"
 
 void UserController::handleRequest(const HttpRequest& req, HttpResponse* resp) {
-    if(req.getMethod() == HttpRequest::kPost && req.path() == "/shit") {
-        handleRegister(req, resp);
-    }
-}
-
-
-void UserController::handleRegister(const HttpRequest& req, HttpResponse* resp) {
-    json js;
+    Json resJson;
+    Json reqJson;
     try {
-        js = json::parse(req.body());
-    } catch (json::exception) {
+        reqJson = Json::parse(req.body());
+        if(req.getMethod() == HttpRequest::kPost && req.path() == "/shit") {
+            Json resJson = UserService::instance()->register(reqJson);
+        }
+    } catch (Json::exception) {
         resp->setStatusCode(HttpResponse::k200Ok);
         resp->setStatusMessage("OK");
         resp->setContentType("text/html");
         resp->addHeader("Server", "Muduo");
-        std::string now = Timestamp::now().toFormattedString();
         resp->setBody("ERROR");
     }
-    resp->setStatusCode(HttpResponse::k200Ok);
-    resp->setStatusMessage("OK");
-    resp->setContentType("text/html");
-    resp->addHeader("Server", "Muduo");
-    std::string now = Timestamp::now().toFormattedString();
-    resp->setBody(js.dump());
+    
+}
+
+
+Json UserController::handleRegister(const Json& req) {
+    
+    UserService::instance()->register()
 }

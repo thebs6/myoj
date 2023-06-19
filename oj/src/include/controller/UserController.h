@@ -1,6 +1,6 @@
 #pragma once
 #include "ControllerBase.h"
-using json = nlohmann::json;
+using Json = nlohmann::json;
 
 class UserController : public ControllerBase {
 public:
@@ -9,7 +9,8 @@ public:
     void handleRequest(const HttpRequest& req, HttpResponse* resp) override;
 
 private:
-    void handleRegister(const HttpRequest& req, HttpResponse* resp);
+    Json handleRegister(const Json& reqJson);
+    // void doRegister()
     // void handleLogin(const HttpRequest& req, HttpResponse* resp);
     // void handleTokenLogin(const HttpRequest& req, HttpResponse* resp);
     // void handleGetUserInfo(const HttpRequest& req, HttpResponse* resp);
