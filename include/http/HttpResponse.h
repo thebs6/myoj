@@ -12,7 +12,9 @@ public:
         k200Ok = 200,
         k301MovedPermanently = 301,
         k400BadRequest = 400,
+        k401Unauthorized = 401,
         k404NotFound = 404,
+        k500InternalServerError = 500,
     };
 
     explicit HttpResponse(bool close) : statusCode_(kUnknown), closeConnection_(close) {}

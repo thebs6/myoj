@@ -3,6 +3,7 @@
 #include "Logging.h"
 #include "Timestamp.h"
 #include "json.hpp"
+#include <sstream>
 #include <unordered_map>
 #include <utility>
 
@@ -72,6 +73,32 @@ public:
 
     void setQuery(const char* start, const char* end) {
         query_.assign(start, end);
+        std::istringstream stream(query_);
+        
+        std::istringstream iss(query_);
+        std::string param;
+        while (std::getline(iss, param, '&')) {
+            std::istringstream paramIss(param);
+            std::string key, value;
+            if (std::getline(paramIss, key, '=') && std::getline(paramIss, value))
+            {
+                // 存储参数键值对
+                params_[key] = value;
+            }
+        }
+    }
+
+    bool hasParam(const std::string& field) const {
+        return params_.find(field) != params_.end();
+    }
+
+    std::string getParam(const std::string& field) const {
+        std::string result;
+        auto it = params_.find(field);
+        if(it != params_.end()) {
+            result = it->second;
+        }
+        return result;
     }
 
     const std::string& query() const {
@@ -139,6 +166,7 @@ private:
     std::string query_;
     Timestamp receiveTime_;
     std::unordered_map<std::string, std::string> headers_;
+    std::unordered_map<std::string, std::string> params_;
     std::string body_;
 };
 

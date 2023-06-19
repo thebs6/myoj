@@ -1,12 +1,14 @@
-#pragma once
+#ifndef USERLIST_H
+#define USERLIST_H
 #include "json.hpp"
-#include "MysqlConn.h"
-#include "ConnectionPool.h"
-
 using Json = nlohmann::json;
-class UserService {
+#include <unordered_map>
+
+class UserList
+{
 public:
-    static UserService* instance();
+    // 局部静态特性的方式实现单实例
+    static UserList *GetInstance();
     // 注册用户
     Json RegisterUser(Json &registerjson);
 
@@ -55,7 +57,13 @@ public:
 
     // 是否是管理员或以上
     bool IsAdministrator(Json &json);
+
 private:
-    UserService();
-    ~UserService();
+    UserList();
+    ~UserList();
+
+private:
+    // 用户权限的哈希表，键：用户ID，值：用户权限
+    std::unordered_map<int64_t, int> UserAuthorityMap;
 };
+#endif

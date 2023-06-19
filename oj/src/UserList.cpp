@@ -1,29 +1,32 @@
-#include "UserService.h"
-
-#include "snowflake.hpp"
-// #include "RedisDataBase.h"
+#include "UserList.h"
+#include "MongoDataBase.h"
+#include "./utils/snowflake.hpp"
+#include "RedisDataBase.h"
 #include <iostream>
-#include <mutex>
 using namespace std;
 
 // 雪花算法
 using snowflake_t = snowflake<1534832906275L, std::mutex>;
 snowflake_t uuid_token;
 
-
-Json UserService::RegisterUser(Json &registerjson)
+UserList *UserList::GetInstance()
 {
-    
+    static UserList userlist;
+    return &userlist;
+}
+Json UserList::RegisterUser(Json &registerjson)
+{
+    Json json = MoDB::GetInstance()->RegisterUser(registerjson);
     // 将其权限加入用户权限表中
-    if (json["Result"].asString() == "Success")
+    if (json["Result"].get<std::string>() == "Success")
     {
-        int64_t id = json["_id"].asInt64();
+        int64_t id = json["_id"].get<int64_t>();
         UserAuthorityMap[id] = 3;
     }
     return json;
 }
 
-Json UserService::LoginUser(Json &loginjson)
+Json UserList::LoginUser(Json &loginjson)
 {
     Json json = MoDB::GetInstance()->LoginUser(loginjson);
 
@@ -34,7 +37,7 @@ Json UserService::LoginUser(Json &loginjson)
         int64_t token = uuid_token.nextid();
 
         // Redis存入Token
-        ReDB::GetInstance()->SetToken(to_string(token), json["Info"]["_id"].asString());
+        ReDB::GetInstance()->SetToken(to_string(token), json["Info"]["_id"].get<std::string>());
 
         json["Info"]["Token"] = to_string(token);
     }
@@ -42,9 +45,9 @@ Json UserService::LoginUser(Json &loginjson)
     return json;
 }
 
-Json UserService::LoginUserByToken(Json &loginjson)
+Json UserList::LoginUserByToken(Json &loginjson)
 {
-    string token = loginjson["Token"].asString();
+    string token = loginjson["Token"].get<std::string>();
 
     // 根据Token查询UserId
     string userid = ReDB::GetInstance()->GetUserIdByToken(token);
@@ -54,48 +57,48 @@ Json UserService::LoginUserByToken(Json &loginjson)
     return MoDB::GetInstance()->LoginUserByToken(loginjson);
 }
 
-bool UserService::UpdateUserProblemInfo(Json &updatejson)
+bool UserList::UpdateUserProblemInfo(Json &updatejson)
 {
     return MoDB::GetInstance()->UpdateUserProblemInfo(updatejson);
 }
 
-Json UserService::SelectUserRank(Json &queryjson)
+Json UserList::SelectUserRank(Json &queryjson)
 {
     return MoDB::GetInstance()->SelectUserRank(queryjson);
 }
 
-Json UserService::SelectUserInfo(Json &queryjson)
+Json UserList::SelectUserInfo(Json &queryjson)
 {
     return MoDB::GetInstance()->SelectUserInfo(queryjson);
 }
 
-Json UserService::UpdateUserInfo(Json &updatejson)
+Json UserList::UpdateUserInfo(Json &updatejson)
 {
     return MoDB::GetInstance()->UpdateUserInfo(updatejson);
 }
 
-Json UserService::SelectUserUpdateInfo(Json &queryjson)
+Json UserList::SelectUserUpdateInfo(Json &queryjson)
 {
     return MoDB::GetInstance()->SelectUserUpdateInfo(queryjson);
 }
 
-Json UserService::SelectUserSetInfo(Json &queryjson)
+Json UserList::SelectUserSetInfo(Json &queryjson)
 {
     return MoDB::GetInstance()->SelectUserSetInfo(queryjson);
 }
 
-Json UserService::DeleteUser(Json &deletejson)
+Json UserList::DeleteUser(Json &deletejson)
 {
     Json json = MoDB::GetInstance()->DeleteUser(deletejson);
-    if (json["Result"].asString() == "Success")
+    if (json["Result"].get<std::string>() == "Success")
     {
-        int64_t id = stoll(deletejson["UserId"].asString());
+        int64_t id = stoll(deletejson["UserId"].get<std::string>());
         UserAuthorityMap.erase(id);
     }
     return json;
 }
 
-bool UserService::InitUserAuthority()
+bool UserList::InitUserAuthority()
 {
     Json json = MoDB::GetInstance()->SelectUserAuthority();
     if (json["Result"] == "Fail")
@@ -103,7 +106,7 @@ bool UserService::InitUserAuthority()
 
     for (auto info : json["ArrayInfo"])
     {
-        UserAuthorityMap[info["_id"].asInt64()] = info["Authority"].asInt();
+        UserAuthorityMap[info["_id"].get<int64_t>()] = info["Authority"].get<int>();
     }
 
     return true;
@@ -112,13 +115,13 @@ bool UserService::InitUserAuthority()
 // 将json 的Token 转化为 VerifyId
 void TokenToVerifyId(Json &json)
 {
-    if (!json["Token"].isNull())
+    if (!json["Token"].empty())
     {
-        json["VerifyId"] = ReDB::GetInstance()->GetUserIdByToken(json["Token"].asString());
+        json["VerifyId"] = ReDB::GetInstance()->GetUserIdByToken(json["Token"].get<std::string>());
     }
 }
 
-int UserService::GetUserAuthority(Json &json)
+int UserList::GetUserAuthority(Json &json)
 {
     /*
         用户权限
@@ -127,11 +130,11 @@ int UserService::GetUserAuthority(Json &json)
         5：管理员
     */
     // 如果未发现ID
-    if (json["VerifyId"].isNull())
+    if (json["VerifyId"].empty())
         return 1;
     try
     {
-        int64_t id = stoll(json["VerifyId"].asString());
+        int64_t id = stoll(json["VerifyId"].get<std::string>());
         // 如果未查询到该用户ID或者用户ID为0是游客
         if (UserAuthorityMap[id] == 0)
             return 1;
@@ -143,7 +146,7 @@ int UserService::GetUserAuthority(Json &json)
     }
 }
 // 是否是普通用户或以上
-bool UserService::IsOrdinaryUser(Json &json)
+bool UserList::IsOrdinaryUser(Json &json)
 {
     TokenToVerifyId(json);
     if (GetUserAuthority(json) >= 3)
@@ -153,7 +156,7 @@ bool UserService::IsOrdinaryUser(Json &json)
 }
 
 // 是否是作者本人或以上
-bool UserService::IsAuthor(Json &json)
+bool UserList::IsAuthor(Json &json)
 {
     TokenToVerifyId(json);
     int authority = GetUserAuthority(json);
@@ -165,8 +168,8 @@ bool UserService::IsAuthor(Json &json)
         return true;
     try
     {
-        int64_t verifyid = stoll(json["VerifyId"].asString());
-        int64_t userid = stoll(json["UserId"].asString());
+        int64_t verifyid = stoll(json["VerifyId"].get<std::string>());
+        int64_t userid = stoll(json["UserId"].get<std::string>());
 
         if (verifyid == userid)
             return true;
@@ -180,7 +183,7 @@ bool UserService::IsAuthor(Json &json)
 }
 
 // 是否是管理员或以上
-bool UserService::IsAdministrator(Json &json)
+bool UserList::IsAdministrator(Json &json)
 {
     TokenToVerifyId(json);
     if (GetUserAuthority(json) >= 5)
@@ -189,9 +192,9 @@ bool UserService::IsAdministrator(Json &json)
         return false;
 }
 
-UserService::UserList()
+UserList::UserList()
 {
 }
-UserService::~UserList()
+UserList::~UserList()
 {
 }

@@ -44,4 +44,6 @@ private:
     TcpServer server_;
     HttpCallback httpCallback_;
     WorkThreadPool pool;
+
+    std::unordered_map<std::string, HttpCallback> req_map_;
 };
