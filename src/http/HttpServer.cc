@@ -78,13 +78,21 @@ void HttpServer::handleRequest(const TcpConnectionPtr& conn, std::shared_ptr<Buf
 
 void HttpServer::onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp receiveTime) {
     HttpContext* context = std::any_cast<HttpContext>(conn->getContext());
-    auto idx = pool.hash(conn->peerAddress().toIpPort()); 
-    auto readBuf = std::make_shared<Buffer>();
-    readBuf->swap(*buf);
-    LOG_DEBUG << "   [" << CurrentThread::tid() << "]" <<" onMessage submitTask" <<  readBuf->peek();
-    pool.submitTask(idx, [this, conn, readBuf, receiveTime, context]() {
-        handleRequest(conn, readBuf, receiveTime, context);
-    });
+    
+    // auto readBuf = std::make_shared<Buffer>();
+
+    // readBuf->swap(*buf);
+    // LOG_DEBUG << "   [" << CurrentThread::tid() << "]" <<" onMessage submitTask" <<  readBuf->peek();
+    // // pool.submitTask(idx, [this, conn, readBuf, receiveTime, context]() {
+    // handleRequest(conn, readBuf, receiveTime, context);
+    if (!context->parseRequest(buf, receiveTime)) {
+        conn->send("HTTP/1.1 400 BadRequest\r\n\r\n");
+    }
+    if (context->getAll()) {
+        onRequest(conn, context->request());
+        context->reset();
+    }
+    // });
 }
 
 
