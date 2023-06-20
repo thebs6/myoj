@@ -34,6 +34,9 @@ public:
     // 计算连接存活的总时长
     long long getAliveTime();
 
+    // 插入并返回id
+    uint64_t insert(const std::string& sql, uint64_t& id);
+
 private:
     void freeResult();
     MYSQL* conn_ = nullptr;

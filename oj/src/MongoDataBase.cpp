@@ -3258,14 +3258,14 @@ int64_t MoDB::GetMaxId(std::string name)
 
 MoDB::MoDB()
 {
-    // 初始化ID
-    m_problemid = GetMaxId("Problem");
-    m_statusrecordid = GetMaxId("StatusRecord");
-    m_commentid = GetMaxId("Comment");
-    int64_t m_announcementid = GetMaxId("Announcement");
-    int64_t m_solutionid = GetMaxId("Solution");
-    int64_t m_discussid = GetMaxId("Discuss");
-    m_articleid = max(m_solutionid, max(m_discussid, m_announcementid));
+    // // 初始化ID
+    // m_problemid = GetMaxId("Problem");
+    // m_statusrecordid = GetMaxId("StatusRecord");
+    // m_commentid = GetMaxId("Comment");
+    // int64_t m_announcementid = GetMaxId("Announcement");
+    // int64_t m_solutionid = GetMaxId("Solution");
+    // int64_t m_discussid = GetMaxId("Discuss");
+    // m_articleid = max(m_solutionid, max(m_discussid, m_announcementid));
 }
 MoDB::~MoDB()
 {

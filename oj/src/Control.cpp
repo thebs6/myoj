@@ -495,15 +495,16 @@ Json Control::GetTags(Json &queryjson)
 	{
 		return Tag::GetInstance()->getProblemTags();
 	}
+	return Json();
 }
 
 Control::Control()
 {
-	// 初始化题目标签
-	Tag::GetInstance()->InitProblemTags();
+	// // 初始化题目标签
+	// Tag::GetInstance()->InitProblemTags();
 
-	// 初始化用户权限
-	UserList::GetInstance()->InitUserAuthority();
+	// // 初始化用户权限
+	// UserList::GetInstance()->InitUserAuthority();
 
 	// 初始化返回变量
 	NoPermission["Result"] = "401";

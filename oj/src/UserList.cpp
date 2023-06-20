@@ -1,5 +1,6 @@
 #include "UserList.h"
 #include "MongoDataBase.h"
+#include "MysqlDataBase.h"
 #include "./utils/snowflake.hpp"
 #include "RedisDataBase.h"
 #include <iostream>
@@ -16,7 +17,7 @@ UserList *UserList::GetInstance()
 }
 Json UserList::RegisterUser(Json &registerjson)
 {
-    Json json = MoDB::GetInstance()->RegisterUser(registerjson);
+    Json json = MysqlDataBase::GetInstance()->RegisterUser(registerjson);
     // 将其权限加入用户权限表中
     if (json["Result"].get<std::string>() == "Success")
     {

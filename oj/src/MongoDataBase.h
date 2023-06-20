@@ -427,7 +427,7 @@ private:
 
 private:
     mongocxx::instance instance{};                                                            // This should be done only once.
-    mongocxx::uri uri{"mongodb://root:root@192.168.49.132:27017/?authMechanism=SCRAM-SHA-1"}; // 连接配置
+    mongocxx::uri uri{"mongodb://root:root@localhost:27017/?authMechanism=SCRAM-SHA-1"}; // 连接配置
     mongocxx::pool pool{uri};                                                                 // 连接池
 
     std::atomic_int64_t m_problemid;      // 题目ID

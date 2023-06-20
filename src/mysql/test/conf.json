@@ -1,9 +1,9 @@
 {
     "ip":"127.0.0.1",
     "port":3306,
-    "userName":"root",
+    "userName":"thebs",
     "password":"sbeht123",
-    "dbName":"test",
+    "dbName":"lc0611",
     "minSize":2,
     "maxSize":4,
     "maxIdleTime":5000,

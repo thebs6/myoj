@@ -38,6 +38,16 @@ bool MysqlConn::update(const std::string& sql)
     return true;
 }
 
+// 插入并返回id
+uint64_t MysqlConn::insert(const std::string& sql, uint64_t& id) {
+    if(mysql_query(conn_, sql.c_str())) {
+        return false;
+    }
+    id = mysql_insert_id(conn_);
+    return true;
+    return false;
+}
+
 // 查询数据库
 bool MysqlConn::query(const std::string& sql)
 {
