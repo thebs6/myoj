@@ -1046,9 +1046,9 @@ void doGetTags(const HttpRequest &req, HttpResponse*res)
 }
 
 void OJServer::onRequest(const HttpRequest& req, HttpResponse* resp) {
-    if(req.getMethod() == HttpRequest::kGet) {
+    if(req.getMethod() == HttpRequest::kGet && get_map_.find(req.path()) != get_map_.end()) {
         get_map_[req.path()](req, resp);
-    } else if(req.getMethod() == HttpRequest::kPost) {
+    } else if(req.getMethod() == HttpRequest::kPost && post_map_.find(req.path()) != post_map_.end()) {
             post_map_[req.path()](req, resp);
     }
 

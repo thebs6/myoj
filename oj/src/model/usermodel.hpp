@@ -1,6 +1,7 @@
 #include "user.hpp"
 #include "ConnectionPool.h"
 #include "Connector.h"
+#include "Logging.h"
 class UserModel {
 public:
     static UserModel* getInstance() {

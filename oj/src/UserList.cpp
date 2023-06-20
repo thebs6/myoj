@@ -21,7 +21,7 @@ Json UserList::RegisterUser(Json &registerjson)
     // 将其权限加入用户权限表中
     if (json["Result"].get<std::string>() == "Success")
     {
-        int64_t id = json["_id"].get<int64_t>();
+        int64_t id = json["Id"].get<int64_t>();
         UserAuthorityMap[id] = 3;
     }
     return json;

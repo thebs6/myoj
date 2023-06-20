@@ -43,7 +43,7 @@ ConnectionPool::~ConnectionPool()
 // 解析JSON配置文件
 bool ConnectionPool::parseJsonFile()
 {
-    std::ifstream file("conf.json");
+    std::ifstream file("/home/thebs/mymuduo/src/mysql/test/conf.json");
     json conf = json::parse(file);
 
     ip_ = conf["ip"];

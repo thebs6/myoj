@@ -3,7 +3,7 @@ set(HTTP_SRCS
   HttpServer.cc
   HttpResponse.cc
   HttpContext.cc
-  main.cc
+  test/main.cc
 )
 
 # set(OJ

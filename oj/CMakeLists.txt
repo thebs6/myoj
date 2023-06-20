@@ -5,7 +5,7 @@ include_directories(/usr/local/include/bsoncxx/v_noabi /usr/local/include/libbso
 include_directories(hiredis sw)
 
 aux_source_directory(${PROJECT_SOURCE_DIR}/oj/src SRC_BASE)
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/http HTTP_SRC)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/http/ HTTP_SRC)
 aux_source_directory(${PROJECT_SOURCE_DIR}/oj/model MODEL_SRC)
 include_directories(${PROJECT_SOURCE_DIR}/oj/src)
 include_directories(${PROJECT_SOURCE_DIR}/include/http)
