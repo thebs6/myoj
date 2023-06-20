@@ -29,7 +29,7 @@ Json UserList::RegisterUser(Json &registerjson)
 
 Json UserList::LoginUser(Json &loginjson)
 {
-    Json json = MoDB::GetInstance()->LoginUser(loginjson);
+    Json json = MysqlDataBase::GetInstance()->LoginUser(loginjson);
 
     if (json["Result"] == "Success")
     {
@@ -38,7 +38,7 @@ Json UserList::LoginUser(Json &loginjson)
         int64_t token = uuid_token.nextid();
 
         // Redis存入Token
-        ReDB::GetInstance()->SetToken(to_string(token), json["Info"]["_id"].get<std::string>());
+        ReDB::GetInstance()->SetToken(to_string(token), to_string(json["Info"]["id"].get<uint64_t>()));
 
         json["Info"]["Token"] = to_string(token);
     }

@@ -20,6 +20,7 @@ public:
         传出：Json(Result,Reason)
     */
     Json RegisterUser(Json &registerjson);
+    Json LoginUser(Json &loginjson);
 
 private:
     /*

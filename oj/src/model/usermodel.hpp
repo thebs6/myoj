@@ -51,6 +51,17 @@ public:
         }
         return false;
     }
+
+    bool verifyCredentials(const std::string& username, const std::string& password) {
+        std::string sql = "SELECT username FROM user WHERE username = '" + username + "' AND password = '" + password + "'";
+        auto conn = ConnectionPool::getConnectionPool()->getConnection();
+
+        if (conn->query(sql) && conn->next()) {
+            return true;
+        }
+        return false;
+    }
+
 private:
     UserModel(){};
     ~UserModel(){};

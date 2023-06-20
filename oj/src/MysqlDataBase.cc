@@ -59,3 +59,42 @@ Json MysqlDataBase::RegisterUser(Json &registerjson)
         return resjson;
     }
 }
+
+
+Json MysqlDataBase::LoginUser(Json& loginjson) {
+    Json resjson;
+    try {
+        std::string username = loginjson["username"].get<std::string>();
+        std::string password = loginjson["password"].get<std::string>();
+
+        auto userModel = UserModel::getInstance();
+        User user;
+        bool loginSuccess = userModel->queryByUserName(username, user);
+
+        if (!loginSuccess || user.getPassword() != password) {
+            resjson["Result"] = "Fail";
+            resjson["Reason"] = "账户或密码错误！";
+            return resjson;
+        }
+
+        Json userInfo;
+        userInfo["id"] = user.getId();
+        userInfo["username"] = user.getUsername();
+        userInfo["nickname"] = user.getNickname();
+        userInfo["school"] = user.getSchool();
+        userInfo["major"] = user.getMajor();
+        userInfo["acnum"] = user.getAcnum();
+        userInfo["submitnum"] = user.getSubmitnum();
+
+        resjson["Result"] = "Success";
+        resjson["Info"] = userInfo;
+        return resjson;
+    }
+    catch (const std::exception& e) {
+        resjson["Result"] = "500";
+        resjson["Reason"] = "数据库异常！";
+        LOG_ERROR << "【用户登录】数据库异常！";
+        return resjson;
+    }
+}
+
