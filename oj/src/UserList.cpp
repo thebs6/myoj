@@ -38,7 +38,7 @@ Json UserList::LoginUser(Json &loginjson)
         int64_t token = uuid_token.nextid();
 
         // Redis存入Token
-        ReDB::GetInstance()->SetToken(to_string(token), to_string(json["Info"]["id"].get<uint64_t>()));
+        LOG_DEBUG << ReDB::GetInstance()->SetToken(to_string(token), to_string(json["Info"]["id"].get<uint64_t>()));
 
         json["Info"]["Token"] = to_string(token);
     }
@@ -48,14 +48,15 @@ Json UserList::LoginUser(Json &loginjson)
 
 Json UserList::LoginUserByToken(Json &loginjson)
 {
+    LOG_DEBUG << loginjson.dump();
     string token = loginjson["Token"].get<std::string>();
 
     // 根据Token查询UserId
     string userid = ReDB::GetInstance()->GetUserIdByToken(token);
 
-    loginjson["UserId"] = userid;
+    loginjson["id"] = userid;
 
-    return MoDB::GetInstance()->LoginUserByToken(loginjson);
+    return MysqlDataBase::GetInstance()->LoginUserByToken(loginjson);
 }
 
 bool UserList::UpdateUserProblemInfo(Json &updatejson)

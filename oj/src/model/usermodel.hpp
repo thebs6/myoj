@@ -42,6 +42,27 @@ public:
         return false;
     }
 
+    auto queryByUserId(string userid, User& user) -> bool {
+        std::string sql = "SELECT * FROM user WHERE id = " + userid;
+        LOG_DEBUG << sql ;
+        auto conn = ConnectionPool::getConnectionPool()->getConnection();
+
+        if (conn->query(sql) && conn->next()) {
+            user.setId(std::stol(conn->value(0)));
+            user.setUsername(conn->value(1));
+            user.setNickname(conn->value(2));
+            user.setPassword(conn->value(3));
+            user.setSchool(conn->value(4));
+            user.setMajor(conn->value(5));
+            user.setAcnum(std::stoi(conn->value(6)));
+            user.setSubmitnum(std::stoi(conn->value(7)));
+
+            return true;
+        }
+
+        return false;
+    }
+
     auto queryNickName(std::string nickname) -> bool {
         std::string sql = "SELECT nickname FROM user WHERE nickname = '" + nickname + "'";
         auto conn = ConnectionPool::getConnectionPool()->getConnection();

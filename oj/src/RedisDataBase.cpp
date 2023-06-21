@@ -1,4 +1,5 @@
 #include "RedisDataBase.h"
+#include "Logging.h"
 
 using namespace std;
 ReDB *ReDB::GetInstance()
@@ -16,6 +17,7 @@ bool ReDB::SetToken(std::string token, std::string userid)
     }
     catch (const std::exception &e)
     {
+        LOG_ERROR << e.what() ;
         return false;
     }
 }
@@ -117,9 +119,9 @@ std::string ReDB::GetStatusRecordCache(std::string statusrecordid)
 }
 ReDB::ReDB()
 {
-    redis_token = new Redis("tcp://thebs@127.0.0.1:6379/0?socket_timeout=50ms&connect_timeout=1s&pool_size=5");
+    redis_token = new Redis("tcp://123456@127.0.0.1:6379/0?socket_timeout=50ms&connect_timeout=1s&pool_size=5");
 
-    redis_cache = new Redis("tcp://thebs@127.0.0.1:6379/1?socket_timeout=50ms&connect_timeout=1s&pool_size=5");
+    redis_cache = new Redis("tcp://123456@127.0.0.1:6379/1?socket_timeout=50ms&connect_timeout=1s&pool_size=5");
 }
 
 ReDB::~ReDB()

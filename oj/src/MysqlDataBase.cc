@@ -1,5 +1,6 @@
 #include "MysqlDataBase.h"
 #include "ConnectionPool.h"
+#include "model/user.hpp"
 
 MysqlDataBase *MysqlDataBase::GetInstance() {
     static MysqlDataBase db;
@@ -98,3 +99,38 @@ Json MysqlDataBase::LoginUser(Json& loginjson) {
     }
 }
 
+Json MysqlDataBase::LoginUserByToken(Json &loginjson) {
+    Json resjson;
+    try {
+        string id = loginjson["id"].get<string>();
+
+        auto userModel = UserModel::getInstance();
+        User user;
+        bool loginSuccess = userModel->queryByUserId(id, user);
+
+        if (!loginSuccess) {
+            resjson["Result"] = "Fail";
+            resjson["Reason"] = "不存在该用户";
+            return resjson;
+        }
+
+        Json userInfo;
+        userInfo["id"] = user.getId();
+        userInfo["username"] = user.getUsername();
+        userInfo["nickname"] = user.getNickname();
+        userInfo["school"] = user.getSchool();
+        userInfo["major"] = user.getMajor();
+        userInfo["acnum"] = user.getAcnum();
+        userInfo["submitnum"] = user.getSubmitnum();
+
+        resjson["Result"] = "Success";
+        resjson["Info"] = userInfo;
+        return resjson;
+    }
+    catch (const std::exception& e) {
+        resjson["Result"] = "500";
+        resjson["Reason"] = "数据库异常！";
+        LOG_ERROR << "【用户登录】数据库异常！";
+        return resjson;
+    }
+}
