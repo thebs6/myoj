@@ -133,8 +133,8 @@ Json Control::SelectProblemListByAdmin(Json &queryjson)
 Json Control::GetJudgeCode(Json judgejson)
 {
 	// 如果不是用户，无权操作
-	if (!UserList::GetInstance()->IsOrdinaryUser(judgejson))
-		return NoPermission;
+	// if (!UserList::GetInstance()->IsOrdinaryUser(judgejson))
+	// 	return NoPermission;
 
 	Json resjson;
 	// 传入Json(ProblemId,UserId,UserNickName,Code,Language,TimeLimit,MemoryLimit,JudgeNum,ProblemTitle)
@@ -149,20 +149,21 @@ Json Control::GetJudgeCode(Json judgejson)
 	insertjson["Language"] = judgejson["Language"];
 	insertjson["Code"] = judgejson["Code"];
 
-	string submitid = StatusRecordList::GetInstance()->InsertStatusRecord(insertjson);
+	// TODO
+	// string submitid = StatusRecordList::GetInstance()->InsertStatusRecord(insertjson);
 
-	if (submitid == "0")
-	{
-		resjson["Result"] = "Fail";
-		resjson["Reason"] = "系统出错！";
-		return resjson;
-	}
+	// if (submitid == "0")
+	// {
+	// 	resjson["Result"] = "Fail";
+	// 	resjson["Reason"] = "系统出错！";
+	// 	return resjson;
+	// }
 
 	// 运行代码
 	// Json(SubmitId,ProblemId,JudgeNum,Code,Language,TimeLimit,MemoryLimit)
 	Json runjson;
 	runjson["Code"] = judgejson["Code"];
-	runjson["SubmitId"] = submitid;
+	runjson["SubmitId"] = "1";
 	runjson["ProblemId"] = judgejson["ProblemId"];
 	runjson["Language"] = judgejson["Language"];
 	runjson["JudgeNum"] = judgejson["JudgeNum"];

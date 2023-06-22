@@ -4,6 +4,16 @@
 using Json = nlohmann::json;
 #include <string>
 
+extern "C" {
+#include "../judge/common/common.h"
+#include "../judge/judge/judge.h"
+#include "../judge/child/child.h"
+#include "../judge/guard/guard.h"
+#include "../judge/logger/logger.h"
+#include "../judge/time/time.h"
+#include "../judge/system/system.h"
+}
+
 enum Status
 {
     PJ,  // PJ "Pending & Judging"
@@ -65,9 +75,11 @@ private:
 
     bool RunProgramJavaScript(); // 运行JavaScript
 
-    bool RunProgram(struct config *conf); // 运行程序
+    // bool RunProgram(struct config *conf); // 运行程序
+    bool RunProgram(execConfig* conf);
 
-    bool JudgmentResult(struct result *res, std::string &index); // 判断结果
+    // bool JudgmentResult(struct result *res, std::string &index); // 判断结果
+    bool JudgmentResult(struct judgeResult *res, std::string &index);
 
     Json Done(); // 返回结果
 
