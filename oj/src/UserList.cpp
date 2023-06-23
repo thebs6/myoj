@@ -61,7 +61,7 @@ Json UserList::LoginUserByToken(Json &loginjson)
 
 bool UserList::UpdateUserProblemInfo(Json &updatejson)
 {
-    return MoDB::GetInstance()->UpdateUserProblemInfo(updatejson);
+    return MysqlDataBase::GetInstance()->UpdateUserProblemInfo(updatejson);
 }
 
 Json UserList::SelectUserRank(Json &queryjson)

@@ -83,6 +83,18 @@ public:
         return false;
     }
 
+    bool updateProblemStatus(const std::string& username, bool ac, int submitNumAdd) {
+        char sql[1024] = {0};
+        string acUpdate = ac ? ", ac_num=ac_num+1" : "";
+        sprintf(sql, "update user set submit_num=submit_num+%d %s where username=%s", submitNumAdd, acUpdate.c_str(), username.c_str());
+        auto conn = ConnectionPool::getConnectionPool()->getConnection();
+
+        if (conn->update(sql)) {
+            return true;
+        }
+        return false;
+    }
+
 private:
     UserModel(){};
     ~UserModel(){};

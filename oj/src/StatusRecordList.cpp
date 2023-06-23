@@ -1,5 +1,6 @@
 #include "StatusRecordList.h"
 #include "MongoDataBase.h"
+#include "MysqlDataBase.h"
 #include "RedisDataBase.h"
 #include <iostream>
 #include <string>
@@ -19,7 +20,7 @@ Json StatusRecordList::SelectStatusRecordList(Json &queryjson)
 
 string StatusRecordList::InsertStatusRecord(Json &insertjson)
 {
-    return MoDB::GetInstance()->InsertStatusRecord(insertjson);
+    return MysqlDataBase::GetInstance()->InsertStatusRecord(insertjson);
 }
 
 bool StatusRecordList::UpdateStatusRecord(Json &updatejson)

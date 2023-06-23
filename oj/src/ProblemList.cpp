@@ -1,5 +1,6 @@
 #include "ProblemList.h"
 #include "MongoDataBase.h"
+#include "MysqlDataBase.h"
 #include "RedisDataBase.h"
 #include <iostream>
 #include <fstream>
@@ -198,7 +199,7 @@ Json ProblemList::SelectProblemListByAdmin(Json &queryjson)
 
 bool ProblemList::UpdateProblemStatusNum(Json &updatejson)
 {
-    return MoDB::GetInstance()->UpdateProblemStatusNum(updatejson);
+    return MysqlDataBase::GetInstance()->UpdateProblemStatusNum(updatejson);
 }
 
 ProblemList *ProblemList::GetInstance()

@@ -132,7 +132,7 @@ Json Control::SelectProblemListByAdmin(Json &queryjson)
 
 Json Control::GetJudgeCode(Json judgejson)
 {
-	// 如果不是用户，无权操作
+	//如果不是用户，无权操作
 	// if (!UserList::GetInstance()->IsOrdinaryUser(judgejson))
 	// 	return NoPermission;
 
@@ -141,16 +141,8 @@ Json Control::GetJudgeCode(Json judgejson)
 
 	// 添加状态记录
 	// 传入：Json(ProblemId,UserId,UserNickName,ProblemTitle,Language,Code);
-	Json insertjson;
-	insertjson["ProblemId"] = judgejson["ProblemId"];
-	insertjson["UserId"] = judgejson["UserId"];
-	insertjson["UserNickName"] = judgejson["UserNickName"];
-	insertjson["ProblemTitle"] = judgejson["ProblemTitle"];
-	insertjson["Language"] = judgejson["Language"];
-	insertjson["Code"] = judgejson["Code"];
-
-	// TODO
-	// string submitid = StatusRecordList::GetInstance()->InsertStatusRecord(insertjson);
+	// Json insertjson;
+	
 
 	// if (submitid == "0")
 	// {
@@ -160,10 +152,14 @@ Json Control::GetJudgeCode(Json judgejson)
 	// }
 
 	// 运行代码
-	// Json(SubmitId,ProblemId,JudgeNum,Code,Language,TimeLimit,MemoryLimit)
 	Json runjson;
+
+	runjson["UserId"] = judgejson["UserId"];
+	runjson["UserNickName"] = judgejson["UserNickName"];
+	runjson["ProblemTitle"] = judgejson["ProblemTitle"];
+
 	runjson["Code"] = judgejson["Code"];
-	runjson["SubmitId"] = "1";
+	runjson["SubmitId"] = judgejson["SubmitId"];
 	runjson["ProblemId"] = judgejson["ProblemId"];
 	runjson["Language"] = judgejson["Language"];
 	runjson["JudgeNum"] = judgejson["JudgeNum"];
@@ -179,7 +175,8 @@ Json Control::GetJudgeCode(Json judgejson)
 		传入：Json(SubmitId,Status,RunTime,RunMemory,Length,ComplierInfo,
 		TestInfo[(Status,StandardOutput,PersonalOutput,RunTime,RunMemory)])
 	*/
-	StatusRecordList::GetInstance()->UpdateStatusRecord(json);
+	string submitid = StatusRecordList::GetInstance()->InsertStatusRecord(json);
+
 	// 更新题目的状态
 	Json updatejson;
 	updatejson["ProblemId"] = judgejson["ProblemId"];

@@ -3,6 +3,8 @@
 #include "Logging.h"
 #include "ConnectionPool.h"
 #include "model/usermodel.hpp"
+#include "model/statusRecordModel.hpp"
+#include "model/problemListModel.hpp"
 using Json = nlohmann::json;
 using string = std::string;
 #include <atomic>
@@ -44,6 +46,29 @@ public:
         传出：Json(Result,Reason,_id,Avatar,NickName,PersonalProfile,School,Major,JoinTime,Solves,ACNum,SubmitNum)
     */
     Json SelectUserInfo(Json &queryjson);
+
+    // ++++++++++++++++++++++++评测表StatusRecord+++++++++++++++++++++++++
+
+    /*
+        功能：插入待测评记录
+        传入：Json(ProblemId,UserId,UserNickName,ProblemTitle,Language,Code)
+        传出：SubmitId测评的ID
+    */
+    std::string InsertStatusRecord(Json &insertjson);
+    /*
+        功能：更新测评记录
+        传入：Json(SubmitId,Status,RunTime,RunMemory,Length,ComplierInfo,
+        TestInfo[(Status,StandardInput,StandardOutput,PersonalOutput,RunTime,RunMemory)])
+        传出：bool
+    */
+    bool UpdateStatusRecord(Json &updatejson);
+
+    /*
+        功能：更新题目的状态数量
+        传入：Json(ProblemId,Status)
+        传出：bool
+    */
+    bool UpdateProblemStatusNum(Json &updatejson);
 
 private:
     /*

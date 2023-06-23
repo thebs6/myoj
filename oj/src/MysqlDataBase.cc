@@ -1,6 +1,8 @@
 #include "MysqlDataBase.h"
 #include "ConnectionPool.h"
+#include "model/statusRecord.hpp"
 #include "model/user.hpp"
+#include <string>
 
 MysqlDataBase *MysqlDataBase::GetInstance() {
     static MysqlDataBase db;
@@ -134,3 +136,101 @@ Json MysqlDataBase::LoginUserByToken(Json &loginjson) {
         return resjson;
     }
 }
+
+std::string MysqlDataBase::InsertStatusRecord(Json &insertjson) {
+    try
+    {
+        LOG_DEBUG << insertjson.dump();
+        auto srModel = statusRecordModel::getInstance();
+        srModel->insert(insertjson);
+
+        return to_string(insertjson["id"]);
+    }
+    catch (const std::exception &e)
+    {
+        LOG_ERROR << "【插入待测评记录】数据库异常！" ;
+        return "0";
+    }
+}
+
+bool MysqlDataBase::UpdateProblemStatusNum(Json &updatejson)
+{
+    try
+    {
+        int64_t problemid = stoll(updatejson["ProblemId"].get<std::string>());
+        int status = stoi(updatejson["Status"].get<std::string>());
+
+        string statusnum = "";
+        if (status == 1)
+            statusnum = "ce_num";
+        else if (status == 2)
+            statusnum = "ac_num";
+        else if (status == 3)
+            statusnum = "wa_num";
+        else if (status == 4)
+            statusnum = "re_num";
+        else if (status == 5)
+            statusnum = "tle_num";
+        else if (status == 6)
+            statusnum = "mle_num";
+        else if (status == 7)
+            statusnum = "se_num";
+
+        ProblemListModel::getInstance()->update(problemid, statusnum);
+        return true;
+    }
+    catch (const std::exception &e)
+    {
+        LOG_ERROR << "【更新题目的状态数量】数据库异常！" ;
+        return false;
+    }
+}
+
+bool MysqlDataBase::UpdateUserProblemInfo(Json &updatejson)
+{
+    try
+    {
+        std::string username = updatejson["UserId"].get<std::string>();
+        int problemid = stoi(updatejson["ProblemId"].get<std::string>());
+        int status = stoi(updatejson["Status"].get<std::string>());
+        
+        // 如果AC了
+        if (status == 2)
+        {
+            // 将用户提交数目加一
+            UserModel::getInstance()->updateProblemStatus(username, true, 1);
+            // 查询AC题目是否已经添加至Solves的数组中
+            
+            // 如果未添加
+            
+            return true;
+        } else {
+            UserModel::getInstance()->updateProblemStatus(username, false, 1);
+            return true;
+        }
+        return false;
+    }
+    catch (const std::exception &e)
+    {
+        LOG_ERROR << "【更新用户的题目信息】数据库异常！" ;
+        return false;
+    }
+}
+
+// std::string MysqlDataBase::GetUserIdByToken(std::string token)
+// {
+//     try
+//     {
+//         auto res = redis_token->get(token);
+//         if (res)
+//             return *res;
+//         else
+//             return "0";
+//     }
+//     catch (const std::exception &e)
+//     {
+//         return "0";
+//     }
+// }
+
+
